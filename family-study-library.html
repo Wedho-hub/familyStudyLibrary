@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golden Threads Family Library</title>
+<script>
+  // Apply any saved theme choice before first paint, to avoid a flash of the wrong theme.
+  try{
+    var savedTheme = localStorage.getItem('goldenThreadsTheme');
+    if(savedTheme === 'light' || savedTheme === 'dark'){
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  }catch(e){}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: {
+            DEFAULT: 'rgb(var(--c-surface) / <alpha-value>)',
+            raised: 'rgb(var(--c-surface-raised) / <alpha-value>)',
+            card: 'rgb(var(--c-surface-card) / <alpha-value>)',
+          },
+          parchment: {
+            DEFAULT: 'rgb(var(--c-text) / <alpha-value>)',
+            dim: 'rgb(var(--c-text-dim) / <alpha-value>)',
+            faint: 'rgb(var(--c-text-faint) / <alpha-value>)',
+          },
+          gold: { DEFAULT: 'rgb(var(--c-gold) / <alpha-value>)', bright: 'rgb(var(--c-gold-2) / <alpha-value>)' },
+          sage: { DEFAULT: 'rgb(var(--c-sage) / <alpha-value>)', bright: 'rgb(var(--c-sage-2) / <alpha-value>)' },
+          ember: { DEFAULT: 'rgb(var(--c-ember) / <alpha-value>)', bright: 'rgb(var(--c-ember-2) / <alpha-value>)' },
+          clay: { DEFAULT: 'rgb(var(--c-clay) / <alpha-value>)', bright: 'rgb(var(--c-clay-2) / <alpha-value>)' },
+          azure: { DEFAULT: 'rgb(var(--c-azure) / <alpha-value>)', bright: 'rgb(var(--c-azure-2) / <alpha-value>)' },
+        },
+        fontFamily: {
+          display: ['Cinzel', 'Georgia', 'serif'],
+          body: ['"EB Garamond"', 'Georgia', 'serif'],
+          ui: ['Inter', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,500;0,600;1,400&family=Inter:wght@500;600;700&display=swap">
+<style>
+  /* ===== Theme tokens — light is the default (best read length for scripture
+     text on a mixed-age family screen); dark follows system preference or an
+     explicit toggle. Values are R G B triplets consumed via rgb(var(..)/a).
+     A fifth accent (azure) is purely decorative/structural — it never marks
+     a person, so it can't be confused with the Wedho/Miranda/Elizabeth/
+     Lunathi color-coding used throughout the Family Plan and Library. */
+  :root{
+    --c-surface: 247 241 227;
+    --c-surface-raised: 240 231 209;
+    --c-surface-card: 255 255 255;
+    --c-text: 43 32 19;
+    --c-text-dim: 90 72 50;
+    --c-text-faint: 116 96 68;
+    --c-gold: 150 100 16;
+    --c-gold-2: 120 79 10;
+    --c-sage: 47 92 66;
+    --c-sage-2: 34 74 52;
+    --c-ember: 158 61 40;
+    --c-ember-2: 130 46 29;
+    --c-clay: 154 88 24;
+    --c-clay-2: 125 68 15;
+    --c-azure: 40 82 130;
+    --c-azure-2: 28 63 104;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --c-surface: 22 17 12;
+      --c-surface-raised: 31 24 15;
+      --c-surface-card: 37 28 18;
+      --c-text: 233 220 192;
+      --c-text-dim: 201 185 152;
+      --c-text-faint: 168 148 114;
+      --c-gold: 200 161 58;
+      --c-gold-2: 230 195 100;
+      --c-sage: 108 145 121;
+      --c-sage-2: 139 174 151;
+      --c-ember: 177 84 60;
+      --c-ember-2: 208 114 90;
+      --c-clay: 201 138 75;
+      --c-clay-2: 224 167 104;
+      --c-azure: 96 150 205;
+      --c-azure-2: 140 185 227;
+    }
+  }
+  :root[data-theme="dark"]{
+    --c-surface: 22 17 12;
+    --c-surface-raised: 31 24 15;
+    --c-surface-card: 37 28 18;
+    --c-text: 233 220 192;
+    --c-text-dim: 201 185 152;
+    --c-text-faint: 168 148 114;
+    --c-gold: 200 161 58;
+    --c-gold-2: 230 195 100;
+    --c-sage: 108 145 121;
+    --c-sage-2: 139 174 151;
+    --c-ember: 177 84 60;
+    --c-ember-2: 208 114 90;
+    --c-clay: 201 138 75;
+    --c-clay-2: 224 167 104;
+    --c-azure: 96 150 205;
+    --c-azure-2: 140 185 227;
+  }
+
+  html{ font-size:20px; }
+  body{ background:rgb(var(--c-surface)); }
+  ::selection{ background:rgb(var(--c-gold)); color:rgb(var(--c-surface)); }
+  .scrollbar-thin::-webkit-scrollbar{ height:6px; width:6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb{ background:rgb(var(--c-text-faint) / 0.5); border-radius:3px; }
+  details > summary{ list-style:none; cursor:pointer; }
+  details > summary::-webkit-details-marker{ display:none; }
+  .tab-btn[aria-selected="true"]{ color:rgb(var(--c-gold-2)); border-color:rgb(var(--c-gold)); }
+  .person-pill[data-person="wedho"]{ background:rgb(var(--c-gold) / 0.16); color:rgb(var(--c-gold-2)); border-color:rgb(var(--c-gold) / 0.5); }
+  .person-pill[data-person="miranda"]{ background:rgb(var(--c-sage) / 0.16); color:rgb(var(--c-sage-2)); border-color:rgb(var(--c-sage) / 0.5); }
+  .person-pill[data-person="elizabeth"]{ background:rgb(var(--c-ember) / 0.16); color:rgb(var(--c-ember-2)); border-color:rgb(var(--c-ember) / 0.5); }
+  .person-pill[data-person="lunathi"]{ background:rgb(var(--c-clay) / 0.16); color:rgb(var(--c-clay-2)); border-color:rgb(var(--c-clay) / 0.5); }
+  .person-pill[data-person="none"]{ background:rgb(var(--c-text-faint) / 0.16); color:rgb(var(--c-text-faint)); border-color:rgb(var(--c-text-faint) / 0.4); }
+
+  .icon-wed{ color:rgb(var(--c-gold-2)); } .icon-mir{ color:rgb(var(--c-sage-2)); }
+  .icon-eli{ color:rgb(var(--c-ember-2)); } .icon-lun{ color:rgb(var(--c-clay-2)); }
+  .icon-none{ color:rgb(var(--c-text-faint)); }
+  .wash-wed{ background:rgb(var(--c-gold) / 0.07); border-color:rgb(var(--c-gold) / 0.3); }
+  .wash-mir{ background:rgb(var(--c-sage) / 0.07); border-color:rgb(var(--c-sage) / 0.3); }
+  .wash-eli{ background:rgb(var(--c-ember) / 0.07); border-color:rgb(var(--c-ember) / 0.3); }
+  .wash-lun{ background:rgb(var(--c-clay) / 0.07); border-color:rgb(var(--c-clay) / 0.3); }
+
+  .hero-band{
+    background: linear-gradient(120deg,
+      rgb(var(--c-gold) / 0.16), rgb(var(--c-ember) / 0.12) 45%, rgb(var(--c-azure) / 0.12) 100%);
+  }
+
+  .card-hover{ transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+  .card-hover:hover{ transform: translateY(-3px); box-shadow: 0 10px 24px -10px rgb(var(--c-text) / 0.28); }
+
+  @keyframes fadeSlideIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none; } }
+  .view-enter{ animation: fadeSlideIn .4s ease both; }
+
+  @keyframes popCelebrate{ 0%{ transform:scale(1);} 45%{ transform:scale(1.22); } 100%{ transform:scale(1);} }
+  .animate-pop{ animation: popCelebrate .45s cubic-bezier(.34,1.56,.64,1); }
+
+  @keyframes flashHighlight{
+    0%{ box-shadow: 0 0 0 0 rgb(var(--c-gold) / 0.55); }
+    100%{ box-shadow: 0 0 0 14px rgb(var(--c-gold) / 0); }
+  }
+  .animate-flash{ animation: flashHighlight 1s ease-out 2; }
+
+  .bar-fill{ transition: width .7s cubic-bezier(.22,1,.36,1); }
+
+  .icon-btn svg{ width:1.15em; height:1.15em; }
+  .step-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:1.6rem; height:1.6rem; border-radius:9999px; font-family:'Cinzel',serif;
+    font-size:0.8rem; flex:0 0 auto;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .view-enter, .animate-pop, .animate-flash{ animation:none !important; }
+    .card-hover{ transition:none !important; }
+  }
+
+  @media print{
+    .no-print{ display:none !important; }
+    body{ background:#fff !important; }
+    :root{ --c-surface:255 255 255; --c-text:0 0 0; --c-surface-card:255 255 255; }
+    details{ break-inside: avoid; }
+    .card-hover:hover{ transform:none; box-shadow:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app" class="min-h-screen bg-ink text-parchment font-body pb-24"></div>
+
+<script>
+/* =====================================================================
+   GOLDEN THREADS — FAMILY LIBRARY
+   Data is authored as plain JS objects with JSDoc types below, so this
+   file runs directly in the browser (no build step). The shapes mirror
+   what a TypeScript port would declare 1:1 — see the closing note in
+   chat for a real .ts/.tsx project version if you want to build/deploy
+   this as part of a Next.js site.
+   ===================================================================== */
+
+/** @typedef {'wedho'|'miranda'|'elizabeth'|'lunathi'} PersonId */
+
+/** @type {{id:PersonId, name:string, role:string, tagline:string, icon:string}[]} */
+const PEOPLE = [
+  { id:'wedho',     name:'Wedho',     role:'Dad · Teacher', icon:'book',    tagline:'Takes the densest theology first — builds the map the rest of the family walks.' },
+  { id:'miranda',   name:'Miranda',   role:'Mom',           icon:'sprout',  tagline:'Rich, applicable themes with real weight — the steady middle of the study.' },
+  { id:'elizabeth', name:'Elizabeth', role:'Grandma',       icon:'lamp',    tagline:'A lifetime of walking with these very stories — themes that reward that familiarity.' },
+  { id:'lunathi',   name:'Lunathi',   role:'Son',           icon:'compass', tagline:'Hands-on, identity-shaped themes — things you can hold, taste, and decide about.' },
+];
+
+/**
+ * @typedef {Object} Topic
+ * @property {string} id
+ * @property {string} icon
+ * @property {string} title
+ * @property {string} category
+ * @property {string} thread
+ * @property {1|2|3|4} complexity  1 = most concrete, 4 = most abstract/systematic
+ * @property {PersonId|null} defaultAssignee
+ * @property {boolean} [extension]
+ * @property {string} [blurb]
+ * @property {string[]} [ot]
+ * @property {string[]} [jesus]
+ * @property {string[]} [apostolic]
+ * @property {string} [character]
+ * @property {string} [wordBridge]
+ * @property {string[]} [glossary]  glossary term ids referenced
+ */
+
+/** @type {Topic[]} */
+const TOPICS = [
+  // ---------------- WEDHO — most complex / systematic ----------------
+  {
+    id:'temple', icon:'building', title:'Temple, Stone & Cornerstone', category:"God's Household", complexity:4, defaultAssignee:'wedho',
+    thread:'The stone the builders rejected becomes the one thing holding the whole house up.',
+    ot:['God’s house promised to David — 2 Samuel 7:12-16','“The stone the builders rejected” — Psalm 118:22','A stone cut without hands, fills the whole earth — Daniel 2:34-35,44-45'],
+    jesus:['“Destroy this temple” — spoke of his own body — John 2:19-21','“On this rock I will build my church” — Matthew 16:18','Quotes Psalm 118:22 directly, of himself — Matthew 21:42'],
+    apostolic:['Peter quotes the same psalm before the Sanhedrin — Acts 4:11','Built into a holy temple, Christ the cornerstone — Ephesians 2:19-22','“You are God’s temple” — 1 Corinthians 3:16-17','Living stones, chief cornerstone — 1 Peter 2:4-8','New Jerusalem has no temple — the Lord and the Lamb are its temple — Revelation 21:22'],
+    character:'He builds his dwelling out of what men discard. The most rejected stone becomes the one everything else is measured against.',
+    glossary:['ekklesia','qadosh','veil-practice']
+  },
+  {
+    id:'servant', icon:'towel', title:'The Servant / Suffering Servant', category:'Sight & Identity Restored', complexity:4, defaultAssignee:'wedho',
+    thread:'Greatness redefined as a towel and a basin, not a throne.',
+    ot:['The four Servant Songs — despised, rejected, wounded for our transgressions — Isaiah 42:1-4; 49:1-6; 50:4-9; 52:13-53:12'],
+    jesus:['“Not to be served but to serve, and give his life as a ransom” — Mark 10:42-45','Washes the disciples’ feet — John 13:3-17','Quotes Isaiah 53:12 of himself — Luke 22:37'],
+    apostolic:['“Took the form of a servant… therefore God exalted him” — Philippians 2:5-11','Philip begins with this very scripture to preach Jesus — Acts 8:30-35','Sustained quotation of Isaiah 53 applied to Christ’s suffering — 1 Peter 2:21-25'],
+    character:'Power that empties itself voluntarily is not weakness — it is the exact shape of the character he wants formed in us.',
+    wordBridge:'Greek <b>doulos</b> (δοῦλος) is a bondservant, not a hired hand — someone bound by relationship, not contract. Philippians 2 says Christ took that shape on purpose.',
+    glossary:['doulos','chesed']
+  },
+  {
+    id:'marriage', icon:'rings', title:'Marriage, Bride & Bridegroom', category:'Kingdom & Judgment', complexity:4, defaultAssignee:'wedho',
+    thread:'Covenant love that keeps pursuing an unfaithful bride, all the way to a wedding supper.',
+    ot:['Hosea takes back an unfaithful wife as a living parable — Hosea 1-3','“Your Maker is your husband” — Isaiah 54:5','Extended marriage allegory — Ezekiel 16'],
+    jesus:['First miracle, at a wedding — John 2:1-11','Parable of the wedding feast — Matthew 22:1-14','Ten virgins awaiting the bridegroom — Matthew 25:1-13'],
+    apostolic:['“Betrothed you to one husband” — 2 Corinthians 11:2','Christ loved the church as a husband loves his wife — “a profound mystery” — Ephesians 5:25-32','Marriage supper of the Lamb — Revelation 19:7-9','New Jerusalem as the bride — Revelation 21:2,9'],
+    character:'Covenant, not contract. He keeps pursuing rather than discarding — the whole of Hosea is God refusing to give up on an unfaithful wife.',
+    wordBridge:'Greek <b>nymphios</b> (νυμφίος), “bridegroom,” only makes sense against a real betrothal custom — see the Betrothal Customs entry in the glossary.',
+    glossary:['nymphios','betrothal-practice','chesed']
+  },
+  {
+    id:'name', icon:'tag', title:'Name & New Name', category:'Sight & Identity Restored', complexity:4, defaultAssignee:'wedho',
+    thread:'He doesn’t just forgive — he personally renames the people he redeems.',
+    ot:['God’s covenant name revealed — “I AM” — Exodus 3:14-15','Abram to Abraham, Jacob to Israel — identity remade by God — Genesis 17:5; 32:28','“Called by a new name the Lord’s mouth will give” — Isaiah 62:2'],
+    jesus:['Renames Simon “Peter” — John 1:42','“I have manifested your name… made known your name” — John 17:6,26','“Whatever you ask in my name” — John 14:13-14'],
+    apostolic:['“The name that is above every name” — Philippians 2:9-11','“No other name under heaven by which we must be saved” — Acts 4:12','A white stone with a new name written on it — Revelation 2:17','“I will write on him the name of my God… and my own new name” — Revelation 3:12'],
+    character:'Salvation includes a new identity, not just a cancelled debt — he doesn’t just clear your record, he tells you who you are now.',
+    wordBridge:'Hebrew <b>shem</b> (שֵם) is never just a label — it carries a person’s character and authority. To act “in his name” is to act under his actual authority.',
+    glossary:['shem']
+  },
+  {
+    id:'kingdom', icon:'crown', title:'The Kingdom', category:'Kingdom & Judgment', complexity:4, defaultAssignee:'wedho',
+    thread:'A throne promised to David, a mustard seed today, “the kingdom of the world” tomorrow.',
+    ot:['David’s throne established forever — 2 Samuel 7:12-16','A kingdom that will never be destroyed, given to the saints — Daniel 2:44; 7:13-14,27'],
+    jesus:['The constant subject of the parables — Matthew 13; Mark 4; Luke 13','“The kingdom of God is at hand” — Mark 1:15','“The kingdom of God is in the midst of you” — Luke 17:20-21','“My kingdom is not of this world” — John 18:36'],
+    apostolic:['Forty days teaching about the kingdom — Acts 1:3','Delivers the kingdom to God the Father — 1 Corinthians 15:24-25','Transferred into the kingdom of his Son — Colossians 1:13','“The kingdom of the world has become the kingdom of our Lord” — Revelation 11:15'],
+    character:'His reign advances quietly — seed, leaven, seed growing secretly — long before it arrives visibly and finally.',
+    glossary:['parousia','ekklesia']
+  },
+
+  // ---------------- MIRANDA — upper-mid complexity ----------------
+  {
+    id:'wilderness', icon:'cactus', title:'Wilderness & Exodus', category:'Sight & Identity Restored', complexity:3, defaultAssignee:'miranda',
+    thread:'He walks his people’s failures himself, on the same ground, and succeeds where they didn’t.',
+    ot:['Wilderness journey, testing and provision — Exodus 15-17','Unbelief at Kadesh, forty years — Numbers 14','“Man does not live by bread alone” — Deuteronomy 8:2-3'],
+    jesus:['Forty days in the wilderness, tempted — answers each test by quoting Deuteronomy — Matthew 4:1-11'],
+    apostolic:['The wilderness generation “written for our instruction” — 1 Corinthians 10:1-11','“Do not harden your hearts… a rest still remains” — Hebrews 3:7–4:11','The woman flees into the wilderness, nourished for a time — Revelation 12:6,14'],
+    character:'Vicarious obedience, not just vicarious punishment — Christ re-walks Israel’s exact failure and answers it perfectly, on our behalf.',
+    glossary:['wilderness-geography']
+  },
+  {
+    id:'blood', icon:'cup', title:'Blood, Lamb & Sacrifice', category:'Covenant & Identity', complexity:3, defaultAssignee:'miranda',
+    thread:'A doorpost in Egypt, a Lamb pointed out on a riverbank, a scroll no one else was worthy to open.',
+    ot:['Passover lamb, blood on the doorposts — Exodus 12','“The life of the flesh is in the blood” — Leviticus 17:11','“Pierced for our transgressions… led like a lamb” — Isaiah 53:5,7'],
+    jesus:['“This is my blood of the covenant” — Matthew 26:26-28','“A ransom for many” — Mark 10:45','Applies Isaiah 53 to himself directly — Luke 22:37'],
+    apostolic:['John the Baptist: “Behold, the Lamb of God” — John 1:29','Philip preaches Christ from Isaiah 53 to the Ethiopian — Acts 8:32-35','Redeemed with precious blood, a lamb without blemish — 1 Peter 1:18-19','“Without shedding of blood, no forgiveness” — Hebrews 9:22','The Lamb who was slain, worthy — Revelation 5:6,9,12'],
+    character:'Love that substitutes itself. The Shepherd theme and the Lamb theme meet at the same cross — he is both the one who saves and the price paid.',
+    wordBridge:'Hebrew <b>kaphar</b> (כָפַר) means both “cover” and “atone” — the sacrificial system covers sin by dealing with it, not by hiding it.',
+    glossary:['kaphar','atonement-practice']
+  },
+  {
+    id:'vine', icon:'leaf', title:'Vine, Vineyard & Fruit', category:"God's Household", complexity:3, defaultAssignee:'miranda',
+    thread:'He planted a vineyard and looked for justice; he wants fruit, not just foliage.',
+    ot:['Israel as a vine brought out of Egypt — Psalm 80:8-16','Song of the vineyard — looked for justice, found bloodshed — Isaiah 5:1-7'],
+    jesus:['“I am the true vine… abide in me” — John 15:1-8','Parable of the wicked tenants, echoing Isaiah 5 — Matthew 21:33-41','Barren fig tree given one more season — Luke 13:6-9','“You will know them by their fruits” — Matthew 7:16-20'],
+    apostolic:['Fruit of the Spirit — Galatians 5:22-23','Wild branches grafted in — Romans 11:17-24','The grapes of the earth, gathered for the winepress of wrath — Revelation 14:18-20'],
+    character:'Abiding produces what performance cannot. He is patient with the fig tree, but the point of the vine was always fruit.',
+    wordBridge:'Greek <b>ampelos</b> (ἄμπελος), “vine,” understood a real 1st-century farming system — see Vineyard Tenancy in the glossary.',
+    glossary:['ampelos','vineyard-tenancy']
+  },
+  {
+    id:'harvest', icon:'sickle', title:'Harvest, Sowing & Seed', category:'Kingdom & Judgment', complexity:3, defaultAssignee:'miranda',
+    thread:'Patient with the growing season; certain about the final accounting.',
+    ot:['“Seedtime and harvest” — Genesis 8:22','“Sow in tears, reap in joy” — Psalm 126:5-6','“Put in the sickle, the harvest is ripe” — Joel 3:13'],
+    jesus:['Parable of the sower — Matthew 13:3-9,18-23','Wheat and tares, harvest is the end of the age — Matthew 13:24-30,36-43','“The harvest is plentiful, the laborers few” — Matthew 9:37-38','Mustard seed — Matthew 13:31-32'],
+    apostolic:['“Paul planted, Apollos watered, God gave the growth” — 1 Corinthians 3:6-9','“Whatever one sows, that will he reap” — Galatians 6:7-9','The harvest of the earth, one like a son of man with a sickle — Revelation 14:14-16'],
+    character:'He lets growth happen where it can’t be watched, but he never loses count of what was sown.',
+    glossary:['threshing-practice']
+  },
+  {
+    id:'fire', icon:'flame', title:'Fire & Refining', category:'Covenant & Identity', complexity:3, defaultAssignee:'miranda',
+    thread:'A bush that burns without being consumed, a Refiner who purifies rather than merely punishes.',
+    ot:['Burning bush, not consumed — Exodus 3:2','Pillar of fire by night — Exodus 13:21','“He is like a refiner’s fire” — Malachi 3:2-3'],
+    jesus:['“I came to cast fire on the earth” — Luke 12:49','“He will baptize you with the Holy Spirit and fire” — spoken of him — Matthew 3:11'],
+    apostolic:['Tongues of fire at Pentecost — Acts 2:3','Each one’s work tested by fire — 1 Corinthians 3:13-15','Faith tested by fire, more precious than gold — 1 Peter 1:7','Eyes like a flame of fire — Revelation 1:14','“Buy from me gold refined by fire” — to Laodicea — Revelation 3:18'],
+    character:'His holiness burns to purify, not merely to consume — the same fire that judges Laodicea’s lukewarmness is offered to her as gold.',
+    wordBridge:'Hebrew <b>ruach</b> (רוַּח) means spirit, breath, and wind all at once — fire and ruach travel together through the Old and New Testaments as signs of God’s active presence.',
+    glossary:['ruach','qadosh']
+  },
+
+  // ---------------- ELIZABETH — accessible, comfort-rich, narrative ----------------
+  {
+    id:'shepherd', icon:'crook', title:'Shepherd & Sheep', category:"God's Household", complexity:2, defaultAssignee:'elizabeth',
+    thread:'Not a hired hand who runs, but the one who goes looking for the single lost sheep himself.',
+    ot:['“The Lord is my shepherd” — Psalm 23','“He will gather the lambs in his arms” — Isaiah 40:11','False shepherds condemned; “I myself will search for my sheep” — Ezekiel 34'],
+    jesus:['“I am the good shepherd,” lays down his life — John 10:1-18','Parable of the lost sheep — Luke 15:3-7','Sheep and goats separated at judgment — Matthew 25:31-33','“Feed my sheep” — to Peter — John 21:15-17'],
+    apostolic:['“The Shepherd and Overseer of your souls” — 1 Peter 2:25','Elders shepherd the flock, await the Chief Shepherd — 1 Peter 5:2-4','“The great shepherd of the sheep” — Hebrews 13:20','“The Lamb will be their shepherd” — Revelation 7:17'],
+    character:'Leadership as pursuit, not control. He doesn’t wait for the lost sheep to find its own way back.',
+    wordBridge:'Greek <b>poimen</b> (ποιμήν), “shepherd,” is the same word behind “pastor” — the job was never meant to be management, it was meant to be presence.',
+    glossary:['poimen','shepherding-practice']
+  },
+  {
+    id:'bread', icon:'loaf', title:'Bread & Manna', category:"God's Household", complexity:2, defaultAssignee:'elizabeth',
+    thread:'Daily, personal, impossible to stockpile — provision as relationship, not supply.',
+    ot:['Manna, gathered daily — Exodus 16','Bread of the Presence in the tabernacle — Exodus 25:30','Widow’s flour and oil that never ran out — 1 Kings 17:6,13-16'],
+    jesus:['“I am the bread of life” — John 6:32-35,48-51','Feeding the 5,000 and the 4,000 — Matthew 14:13-21; 15:32-38','“Give us this day our daily bread” — Matthew 6:11','“This is my body” — Matthew 26:26'],
+    apostolic:['One loaf, one body — 1 Corinthians 10:16-17','Institution of the Lord’s Supper — 1 Corinthians 11:23-26','Breaking of bread in the early church — Acts 2:42,46','“The hidden manna” promised to the overcomer — Revelation 2:17'],
+    character:'He sustains a day at a time and refuses to be hoarded — manna kept overnight bred worms. Provision that has to be received fresh keeps you coming back to him.',
+    wordBridge:'The word <b>manna</b> comes from the Hebrews’ own question, “man hu?” — “what is it?” They named the miracle after their own confusion, and ate it anyway.',
+    glossary:['manna']
+  },
+  {
+    id:'water', icon:'droplet', title:'Water & Living Water', category:'Covenant & Identity', complexity:2, defaultAssignee:'elizabeth',
+    thread:'From a struck rock to a well at noon to a river with no temple left to flow from.',
+    ot:['Water struck from the rock at Horeb — Exodus 17:6','“Come, everyone who thirsts” — Isaiah 55:1','Forsaken the fountain, hewed broken cisterns — Jeremiah 2:13','River flowing from the temple, healing everything it touches — Ezekiel 47:1-12'],
+    jesus:['Woman at the well — living water welling up to eternal life — John 4:10-14','“Let him come to me and drink,” rivers of living water — John 7:37-39','His own baptism in the Jordan — Matthew 3:13-17','Washes the disciples’ feet — John 13:5'],
+    apostolic:['“The Rock that followed them was Christ” — 1 Corinthians 10:4','Washing of water by the word — Ephesians 5:26','Spring of the water of life, without payment — Revelation 21:6','River of the water of life; “let the thirsty come” — Revelation 22:1,17'],
+    character:'Grace is free, abundant, and offered person to person — not a resource you’re pointed toward, but someone who meets you at your own well at noon.',
+    glossary:['chesed']
+  },
+  {
+    id:'light', icon:'sun', title:'Light & Darkness', category:'The Way of Wisdom', complexity:2, defaultAssignee:'elizabeth',
+    thread:'Not just illumination — the source everything else only reflects.',
+    ot:['“Let there be light” — Genesis 1:3-4','“The people who walked in darkness have seen a great light” — Isaiah 9:2','“Arise, shine, for your light has come” — Isaiah 60:1-3'],
+    jesus:['“I am the light of the world” — John 8:12; 9:5','“You are the light of the world” — Matthew 5:14-16','The eye as the lamp of the body — Matthew 6:22-23'],
+    apostolic:['“The light shines in the darkness” — John 1:4-5,9','“God is light, in him is no darkness at all” — 1 John 1:5-7','“Once darkness, but now light in the Lord” — Ephesians 5:8','No need of sun or lamp — the Lamb is its lamp — Revelation 21:23-24; 22:5'],
+    character:'He isn’t lit from outside; every other light in scripture is borrowed brightness pointing back to him.',
+    wordBridge:'Greek <b>logos</b> (λόγος), “word,” is what John calls Jesus in the very verse that introduces light shining in darkness — the light has always been a Person speaking.',
+    glossary:['logos']
+  },
+  {
+    id:'eyes', icon:'eye', title:'Eyes, Blindness & Sight', category:'Sight & Identity Restored', complexity:2, defaultAssignee:'elizabeth',
+    thread:'He values honest blindness admitted over false sight claimed.',
+    ot:['Seeing but not perceiving — Isaiah 6:9-10','“Open the eyes that are blind” — Isaiah 42:6-7','Servant’s eyes opened to the horses of fire — 2 Kings 6:17'],
+    jesus:['Repeated healings of the blind — John 9; Mark 8:22-25','Quotes Isaiah 6 to explain why he teaches in parables — Matthew 13:13-15','Pharisees called “blind guides” — Matthew 23:16-26','“That those who do not see may see” — John 9:39-41'],
+    apostolic:['Paul struck blind on the Damascus road, scales fall from his eyes — Acts 9:3-9,17-18','“The eyes of your heart enlightened” — Ephesians 1:18','Laodicea: “you do not know you are blind… buy salve” — Revelation 3:17-18'],
+    character:'He’s willing to be the one who opens eyes at real cost to the one being opened — Paul’s healing came after three days of nothing.',
+    glossary:['qadosh']
+  },
+
+  // ---------------- LUNATHI — concrete, tangible, identity/decision themes ----------------
+  {
+    id:'leaven', icon:'bubbles', title:'Leaven', category:'Kingdom & Judgment', complexity:1, defaultAssignee:'lunathi',
+    thread:'A little works through the whole lump — true of the kingdom, and just as true of hypocrisy.',
+    ot:['Unleavened bread at Passover, leaven removed from the house — Exodus 12:15,19','No leaven in offerings burned to the Lord — Leviticus 2:11'],
+    jesus:['Parable of the leaven — hidden, pervasive kingdom growth — Matthew 13:33','“Beware the leaven of the Pharisees” — their hypocrisy — Matthew 16:6,11-12; Luke 12:1'],
+    apostolic:['“A little leaven leavens the whole lump” — purge the old leaven — 1 Corinthians 5:6-8','Same proverb, applied to false teaching — Galatians 5:9'],
+    character:'He takes small things seriously in both directions — a small compromise spreads exactly like a small grace does.',
+    wordBridge:'Greek <b>zyme</b> (ζύμη), “leaven,” was a piece of yesterday’s dough kept back to start tomorrow’s batch — see Leavening Process in the glossary. Try it yourself: bake one loaf with a starter and one without, side by side.',
+    glossary:['zyme','leavening-practice']
+  },
+  {
+    id:'salt', icon:'shaker', title:'Salt', category:'The Way of Wisdom', complexity:1, defaultAssignee:'lunathi',
+    thread:'A covenant seasoning meant to preserve and flavor, not merely to survive alongside the world.',
+    ot:['“Season all your offerings with salt… the salt of the covenant” — Leviticus 2:13','“A covenant of salt forever” — Numbers 18:19'],
+    jesus:['“You are the salt of the earth” — Matthew 5:13','“Have salt in yourselves, be at peace” — Mark 9:50'],
+    apostolic:['“Let your speech be seasoned with salt” — Colossians 4:6'],
+    character:'Identity that loses its distinctiveness loses its purpose — he calls his people to change the flavor of a room, not just occupy it.',
+    wordBridge:'In the ancient world salt was valuable enough to help pay soldiers and seal binding agreements — see Salt as Covenant Seal in the glossary.',
+    glossary:['salt-practice']
+  },
+  {
+    id:'rock', icon:'boulder', title:'Rock & Foundation', category:'The Way of Wisdom', complexity:1, defaultAssignee:'lunathi',
+    thread:'Tested, unshakeable, and freely offered as the only safe place to build a life.',
+    ot:['“He is the Rock, his work is perfect” — Deuteronomy 32:4','“The Lord my rock and my fortress” — Psalm 18:2; 62:2,6-7','A tested stone, a sure foundation — Isaiah 28:16'],
+    jesus:['Wise man builds his house on the rock — Matthew 7:24-27','“On this rock I will build my church” — Matthew 16:18'],
+    apostolic:['“The Rock was Christ” — 1 Corinthians 10:4','“No foundation other than the one laid” — 1 Corinthians 3:11','A stone of stumbling, a rock of offense — 1 Peter 2:6-8, quoting Isaiah 28'],
+    character:'Steadiness is a character trait before it’s a construction metaphor — what he asks you to build on, he already is.',
+    glossary:[]
+  },
+  {
+    id:'way', icon:'signpost', title:'The Way & The Path', category:'The Way of Wisdom', complexity:1, defaultAssignee:'lunathi',
+    thread:'Not directions to somewhere — a person, walked and walkable.',
+    ot:['“The Lord knows the way of the righteous” — Psalm 1:6','The Way of Holiness — Isaiah 35:8','“This is the way, walk in it” — Isaiah 30:21'],
+    jesus:['“I am the way, the truth, and the life” — John 14:6','Narrow gate vs. the broad way — Matthew 7:13-14','Emmaus road — “did not our hearts burn within us” — Luke 24:32'],
+    apostolic:['The early church literally called “the Way” — Acts 9:2; 19:9,23; 24:14','“A new and living way,” opened through his flesh — Hebrews 10:19-20'],
+    character:'He doesn’t just give directions — he is the road, which is why following him is relationship, not compliance.',
+    wordBridge:'Hebrew <b>derek</b> (דֶּ֫רֶך) means road, but also “way of life” — the same word for the physical path and the whole direction of a person’s choices.',
+    glossary:['derek']
+  },
+  {
+    id:'clothing', icon:'shirt', title:'Clothing & Garments', category:'Covenant & Identity', complexity:1, defaultAssignee:'lunathi',
+    thread:'Fig leaves fail; God clothes at the cost of a life; the robe is always given, never sewn by the wearer.',
+    ot:['Fig-leaf coverings fail — Genesis 3:7','God clothes them in skins — the first death, on their behalf — Genesis 3:21','Priestly garments “for glory and for beauty” — Exodus 28','Garments of salvation, robe of righteousness — Isaiah 61:10'],
+    jesus:['Man without a wedding garment cast out — Matthew 22:11-13','Woman healed touching the hem of his garment — Matthew 9:20-22','Transfiguration — garments become white as light — Matthew 17:2','Prodigal’s father: “bring the best robe” — Luke 15:22','His own garments gambled for at the cross — Matthew 27:35'],
+    apostolic:['“Put on Christ” at baptism — Galatians 3:27','White robes washed in the blood of the Lamb — Revelation 7:9,14','“Buy white garments” so shame won’t be seen — Revelation 3:18','“Blessed is he who stays awake and keeps his garments” — Revelation 16:15'],
+    character:'He covers our shame himself, at his own cost — righteousness is always something we’re clothed in, never something we manage to weave.',
+    wordBridge:'Hebrew <b>kaphar</b> (כָפַר), “cover / atone,” is the same root behind the garment God provides in Genesis 3 — not decoration, atonement made wearable.',
+    glossary:['kaphar','crucifixion-practice']
+  },
+
+  // ---------------- EXTENSION THREADS — unassigned, library-only ----------------
+  { id:'oil', icon:'lamp', title:'Oil & Anointing', category:'Extension Thread', complexity:2, defaultAssignee:null, extension:true,
+    thread:'Samuel anoints David, "Christ" itself means Anointed One, the ten virgins’ oil, and being anointed to preach good news.',
+    blurb:'Samuel anoints David with oil (1 Samuel 16) → the title "Christ" (Greek <i>Christos</i>) itself means Anointed One → the ten virgins carry oil for their lamps (Matthew 25) → Jesus reads Isaiah 61 and says he was anointed to preach good news to the poor (Luke 4:18).' },
+  { id:'gate', icon:'door', title:'Gate & Door', category:'Extension Thread', complexity:2, defaultAssignee:null, extension:true,
+    thread:'Blood on the doorposts, "I am the door," the narrow gate, and twelve gates in a city with no need of walls to hide behind.',
+    blurb:'Blood on the doorposts at Passover (Exodus 12) → "I am the door of the sheep" (John 10:7-9) → the narrow gate (Matthew 7:13) → Christ knocking at Laodicea’s door (Revelation 3:20) → the twelve gates of the New Jerusalem (Revelation 21:12-21).' },
+  { id:'priesthood', icon:'building', title:'Priesthood & Mediator', category:'Extension Thread', complexity:3, defaultAssignee:null, extension:true,
+    thread:'Aaron’s priesthood, a mysterious king-priest named Melchizedek, and a whole people made priests.',
+    blurb:'Aaron’s priesthood established (Exodus 28-29) → Melchizedek, king and priest with no recorded genealogy (Genesis 14; Psalm 110) → Christ as our great high priest (Hebrews 4-7) → believers made "a kingdom of priests" (1 Peter 2:9; Revelation 1:6).' },
+  { id:'veil', icon:'curtain', title:'Veil & Curtain', category:'Extension Thread', complexity:3, defaultAssignee:null, extension:true,
+    thread:'A curtain no one could pass without dying, torn top to bottom the moment it no longer needed to stand.',
+    blurb:'The veil shutting off the Most Holy Place (Exodus 26:33) → torn top to bottom at the crucifixion (Matthew 27:51) → "a new and living way through the curtain, that is, his flesh" (Hebrews 10:20).' },
+  { id:'feasts', icon:'calendar', title:'Feasts & Appointed Times', category:'Extension Thread', complexity:3, defaultAssignee:null, extension:true,
+    thread:'Seven feasts on a calendar that turn out to be a prophecy written in holidays.',
+    blurb:'The seven feasts of Leviticus 23 → Passover fulfilled at the cross (1 Corinthians 5:7) → Pentecost fulfilled in Acts 2 → the marriage supper of the Lamb still to come (Revelation 19:9).' },
+  { id:'mountain', icon:'mountain', title:'Mountain', category:'Extension Thread', complexity:2, defaultAssignee:null, extension:true,
+    thread:'Fire and smoke at Sinai, a new law given from a hillside, and a mountain no one needs to fear approaching anymore.',
+    blurb:'Sinai, where the law is given in fire and smoke (Exodus 19) → the Sermon on the Mount, a new law-giving (Matthew 5-7) → the Mount of Transfiguration (Matthew 17) → Mount Zion, the heavenly gathering (Hebrews 12:22-24).' },
+  { id:'gleaning', icon:'sickle', title:'Gleaning & The Poor', category:'Extension Thread', complexity:1, defaultAssignee:null, extension:true,
+    thread:'Leave the corners of the field on purpose — provision was always meant to have margin built in for someone else.',
+    blurb:'Leave the corners of the field for the poor and the sojourner (Leviticus 19:9-10; Ruth 2) → "good news to the poor" as Jesus’s own mission statement (Luke 4:18) → James on caring for orphans and widows (James 1:27).' },
+  { id:'wine', icon:'cup', title:'Wine & New Wine', category:'Extension Thread', complexity:2, defaultAssignee:null, extension:true,
+    thread:'Bread and wine from a mysterious priest-king, wine that runs out at a wedding, and a cup that means two very different things.',
+    blurb:'Melchizedek brings out bread and wine (Genesis 14:18) → new wine can’t go in old wineskins (Matthew 9:17) → water becomes wine at Cana → the cup of the new covenant (Luke 22:20) → the cup of God’s wrath (Revelation 14:10).' },
+];
+
+/** @typedef {{id:string, term:string, script:string, category:'hebrew'|'greek'|'culture', meaning:string, related:string[]}} GlossaryEntry */
+
+/** @type {GlossaryEntry[]} */
+const GLOSSARY = [
+  { id:'kaphar', term:'Kaphar', script:'כָפַר', category:'hebrew', meaning:'To cover, to atone. The same root sits behind both ideas in Hebrew — covering sin and atoning for it are one motion, not two. God "covers" Adam and Eve at the cost of a life in Genesis 3, before the word is ever used technically of the sacrificial system.', related:['clothing','blood'] },
+  { id:'shem', term:'Shem', script:'שֵם', category:'hebrew', meaning:'Name — but in Hebrew thought a name carries a person’s actual character and authority, not just a label for pointing at them. To know God’s name is to know who he is; to act "in his name" is to act under his authority.', related:['name'] },
+  { id:'derek', term:'Derek', script:'דֶּרֶך', category:'hebrew', meaning:'Road, way, path — and by extension, a whole manner of life. The same word describes the physical route from one town to another and the entire direction of a person’s choices.', related:['way'] },
+  { id:'chesed', term:'Chesed', script:'חֶסֶד', category:'hebrew', meaning:'Covenant loyalty, steadfast love — love that keeps its promise even when the other party breaks theirs. This is the word behind God’s pursuit of Israel in Hosea and behind "the Lord’s steadfast love never ceases" (Lamentations 3:22).', related:['marriage','shepherd','water'] },
+  { id:'qadosh', term:'Qadosh', script:'קַדוֹש', category:'hebrew', meaning:'Holy — literally "set apart, other." Not primarily a moral score but a category: God is qadosh the way fire is hot, by nature, and things near him (a mountain, a tent, a people) become set apart too.', related:['fire','temple','eyes'] },
+  { id:'ruach', term:'Ruach', script:'רוּחַ', category:'hebrew', meaning:'Spirit, breath, and wind — one word for all three, because ancient Hebrew didn’t separate "God’s active, invisible power" from "moving air" the way modern English does. The ruach hovers over the waters in Genesis 1 and falls as fire at Pentecost.', related:['fire'] },
+  { id:'shalom', term:'Shalom', script:'שָלוֹם', category:'hebrew', meaning:'Peace — but closer to "wholeness, nothing missing, nothing broken" than to "absence of conflict." It’s the state every one of these themes is ultimately restoring.', related:[] },
+  { id:'manna', term:'Manna', script:'מָן', category:'hebrew', meaning:'The name Israel gave the bread from heaven — from their own confused question "man hu?" ("what is it?"). They named the miracle after the fact that they didn’t understand it, and ate it daily anyway.', related:['bread'] },
+  { id:'ekklesia', term:'Ekklesia', script:'ἐκκλησία', category:'greek', meaning:'"Called-out assembly" — translated "church," but originally just the ordinary Greek word for a public gathering of citizens summoned together. The New Testament borrows a civic word to describe a people called out by God.', related:['temple','kingdom'] },
+  { id:'doulos', term:'Doulos', script:'δοῦλος', category:'greek', meaning:'Bondservant or slave — someone bound to a household by relationship and belonging, not a free-lance hired hand who can walk away. Paul calls himself this of Christ; Philippians 2 says Christ took this form of us.', related:['servant'] },
+  { id:'metanoia', term:'Metanoia', script:'μετάνοια', category:'greek', meaning:'Repentance — literally a "change of mind" that becomes a change of direction. It’s a word about turning around on a road, which is why it pairs so naturally with "the Way."', related:['way'] },
+  { id:'agape', term:'Agape', script:'ἀγάπη', category:'greek', meaning:'Selfless, covenant-shaped love — love as a decision and commitment rather than only a feeling. It’s the word Paul reaches for in 1 Corinthians 13 and the word John uses for "God is love."', related:['marriage','shepherd'] },
+  { id:'poimen', term:'Poimen', script:'ποιμήν', category:'greek', meaning:'Shepherd — the same word later transliterated into "pastor." In the first century it named a specific, humble, outdoor job, not a title of status.', related:['shepherd'] },
+  { id:'ampelos', term:'Ampelos', script:'ἄμπελος', category:'greek', meaning:'Vine — the word Jesus uses in John 15, deliberately picking up Israel’s own prophetic self-description (Psalm 80, Isaiah 5) and applying it to himself instead of the nation.', related:['vine'] },
+  { id:'parousia', term:'Parousia', script:'παρουσία', category:'greek', meaning:'Coming, presence, arrival — used in the first century for an official’s formal visit to a city. The New Testament borrows it for Christ’s return, framing it as a King’s official arrival, not a vague spiritual event.', related:['kingdom','wilderness'] },
+  { id:'logos', term:'Logos', script:'λόγος', category:'greek', meaning:'Word, or reasoned utterance — a term Greek philosophy already used for the rational order behind the universe. John takes that loaded word and says it "became flesh."', related:['light'] },
+  { id:'nymphios', term:'Nymphios', script:'νυμφίος', category:'greek', meaning:'Bridegroom — a word that only carries its full weight against real 1st-century betrothal customs (see Betrothal Customs below).', related:['marriage'] },
+  { id:'zyme', term:'Zyme', script:'ζύμη', category:'greek', meaning:'Leaven, yeast — in the ancient world always a piece of yesterday’s fermented dough saved to start tomorrow’s batch, never a separate packaged ingredient (see Leavening Process below).', related:['leaven'] },
+  { id:'betrothal-practice', term:'Betrothal Customs', script:'Culture', category:'culture', meaning:'A Jewish betrothal was a legally binding stage, often lasting about a year, during which the groom returned to his father’s house to prepare a room or dwelling for his bride. He would then come for her at a time his father judged ready — often unannounced to the bride herself. This is the real-world backdrop behind "no one knows the day or the hour" and the ten virgins waiting with lamps.', related:['marriage'] },
+  { id:'shepherding-practice', term:'Shepherding in Judea', script:'Culture', category:'culture', meaning:'A hired hand had no stake in the flock and would flee from a wolf; the owner-shepherd’s own livelihood and family depended on every sheep. Sheepfolds were often just a low stone wall with one opening — where the shepherd himself would lie down across the gap at night, literally becoming "the door" the sheep could not pass without going through him.', related:['shepherd'] },
+  { id:'threshing-practice', term:'Threshing Floor & Harvest Calendar', script:'Culture', category:'culture', meaning:'Barley ripened first in the Judean spring, wheat weeks later; grain was threshed on a raised, wind-exposed floor where the useless chaff blew away and the valuable grain fell and stayed. Gleaning laws required landowners to leave the edges of a field unharvested for the poor — the real practice behind the Book of Ruth.', related:['harvest'] },
+  { id:'leavening-practice', term:'Leavening Process', script:'Culture', category:'culture', meaning:'Ancient households did not buy separate yeast packets; they kept back a lump of fermented dough from one baking to start the next. A little of that old dough, worked all through a new batch, was enough to leaven the whole thing — exactly the image Paul and Jesus both reach for, in opposite directions.', related:['leaven'] },
+  { id:'crucifixion-practice', term:'Roman Crucifixion & Garments', script:'Culture', category:'culture', meaning:'Under Roman practice, a condemned prisoner’s clothing legally became the property of the executing soldiers, who would divide it among themselves — exactly what happens at the cross, and exactly what Psalm 22:18 had described centuries earlier.', related:['clothing'] },
+  { id:'atonement-practice', term:'Day of Atonement & Priestly Vestments', script:'Culture', category:'culture', meaning:'Once a year the high priest, in specially prescribed garments (Exodus 28), entered the Most Holy Place with the blood of a sacrifice, while a second goat ("the scapegoat") carried the people’s confessed sins away into the wilderness — two goats, together, picturing both atonement and removal.', related:['blood','temple'] },
+  { id:'vineyard-tenancy', term:'Vineyard Tenancy', script:'Culture', category:'culture', meaning:'Absentee landowners commonly leased vineyards to tenant farmers under Roman-era law, taking a share of the harvest through agents. Disputes and even violence between owners and tenants over that share were a real and recognizable situation to Jesus’s first hearers — not an invented scenario.', related:['vine'] },
+  { id:'salt-practice', term:'Salt as Covenant Seal', script:'Culture', category:'culture', meaning:'In the ancient Near East, salt was valuable enough to be used in trade and even, later, to help pay soldiers (the root of the word "salary"). Sharing salt or sealing an agreement "with salt" signified a binding, lasting commitment — which is why scripture calls God’s covenants "covenants of salt."', related:['salt'] },
+  { id:'wilderness-geography', term:'Wilderness Geography', script:'Culture', category:'culture', meaning:'The Sinai and Negev wilderness that Israel crossed, and that Jesus was later driven into, is genuinely hostile terrain — extreme heat, almost no water or shade, sparse food. The "forty days" and "forty years" were not symbolic hardship; the ground itself was part of the test.', related:['wilderness'] },
+  { id:'parable-tradition', term:'Rabbinic Parable Tradition', script:'Culture', category:'culture', meaning:'Teaching in parables (Hebrew <i>mashal</i>) was an established rabbinic method well before and during Jesus’s ministry — he was using a recognized teaching form of his time, not inventing a new one, even as he filled it with unmatched content.', related:['kingdom','vine','harvest'] },
+];
+
+/** @typedef {{title:string, author:string, kind:string, blurb:string, related:string[], link?:string}} MediaItem */
+/** @typedef {{heading:string, note:string, items:MediaItem[]}} MediaGroup */
+
+/** @type {MediaGroup[]} */
+const MEDIA = [
+  {
+    heading:'Foundational Reading — Ellen G. White',
+    note:'The backbone of your existing devotional library — worth reading alongside the matching topics above.',
+    items:[
+      { title:'Christ’s Object Lessons', author:'Ellen G. White', kind:'Book', blurb:'A full commentary on Jesus’s parables — the single best companion for the Kingdom, Harvest, Leaven, and Vine studies.', related:['kingdom','harvest','leaven','vine'] },
+      { title:'Desire of Ages', author:'Ellen G. White', kind:'Book', blurb:'A devotional life of Christ that leans heavily into the Servant, Marriage/Bridegroom, and Light themes.', related:['servant','marriage','light'] },
+      { title:'Patriarchs and Prophets', author:'Ellen G. White', kind:'Book', blurb:'Covers the Old Testament roots in narrative form — strongest companion for Wilderness, Blood/Sacrifice, and Fire.', related:['wilderness','blood','fire'] },
+      { title:'The Great Controversy', author:'Ellen G. White', kind:'Book', blurb:'The long arc of the Kingdom and end-time themes, useful once the Kingdom study opens into eschatology.', related:['kingdom'] },
+    ]
+  },
+  {
+    heading:'For Deeper Study — Adventist Scholars',
+    note:'These go further into the Hebrew, Greek, and ancient Near Eastern background than a family devotional usually can — a good next step for Wedho’s own study before he teaches a topic.',
+    items:[
+      { title:'Typology in Scripture: A Study of Hermeneutical τύπος Structures', author:'Richard M. Davidson', kind:'Academic book', blurb:'The foundational Adventist academic work on how Old Testament "types" legitimately point to New Testament fulfillment — essentially the method this whole library is built on, argued rigorously.', related:['temple','servant','blood'], link:'https://digitalcommons.andrews.edu/books/152/' },
+      { title:'Hebrew for Theologians', author:'Jacques B. Doukhan', kind:'Book', blurb:'Written specifically to help non-specialists grasp how Hebrew words carry theology differently than English — directly useful for every Word Bridge entry in the glossary above.', related:['name','way','clothing'], link:'https://www.amazon.com/Hebrew-Theologians-Textbook-Biblical-Relation/dp/0819192694' },
+      { title:'Books and commentaries by Jacques Doukhan', author:'Jacques B. Doukhan', kind:'Author page', blurb:'Andrews University Old Testament scholar whose work consistently roots New Testament fulfillment in real Hebrew language and ancient Near Eastern culture — worth browsing his full catalog.', related:['temple','wilderness'], link:'https://adventistbookcenter.com/authors/jacques-b-doukhan' },
+    ]
+  },
+  {
+    heading:'Media Ministries — Watch or Listen',
+    note:'Free, family-accessible video and audio — good for a Sabbath afternoon after a study session.',
+    items:[
+      { title:'It Is Written', author:'John Bradshaw', kind:'TV / online ministry', blurb:'Long-running Adventist media ministry with topical Bible teaching that regularly touches sanctuary, prophecy, and Kingdom themes.', related:['temple','kingdom'] },
+      { title:'3ABN (Three Angels Broadcasting Network)', author:'3ABN', kind:'TV / radio network', blurb:'A full Adventist broadcast network with family programming, Bible study series, and music — easy to put on together as a family.', related:[] },
+      { title:'Amazing Facts / Bible Answers Live', author:'Doug Batchelor', kind:'Radio / podcast', blurb:'Call-in Bible answer format that’s approachable for a mixed-age family audience and often lands on typology and prophecy questions.', related:['blood','kingdom'] },
+      { title:'Voice of Prophecy', author:'Voice of Prophecy', kind:'Radio / podcast', blurb:'One of the oldest continuously running Adventist media ministries — solid, steady devotional and Bible-study content.', related:[] },
+      { title:'GYC (Generation of Youth for Christ)', author:'GYC', kind:'Conference talks online', blurb:'Youth-focused Adventist ministry with recorded talks aimed squarely at teens and young adults — a good fit to explore with Lunathi directly.', related:['way','rock'] },
+    ]
+  },
+];
+
+/** @typedef {{name:string, desc:string}} StudyMethod */
+/** @type {StudyMethod[]} */
+const STUDY_METHODS = [
+  { name:'Word Study', desc:'Pick the key Hebrew or Greek word behind the topic (check the Glossary tab) and trace it through several passages — notice how its meaning grows or sharpens each time it appears.' },
+  { name:'Cross-Reference Chase', desc:'Start at one verse and follow every cross-reference the topic card gives, reading each passage in its full context rather than just the highlighted line.' },
+  { name:'SOAP Method', desc:'Write down the Scripture, your Observation of what it says, an Application to your own life, and a short Prayer in response — four short lines is enough.' },
+  { name:'Inductive Study', desc:'Read the passage three times, asking only "what does it say," then "what does it mean," then "what do I do about it" — in that order, resisting the urge to jump straight to application.' },
+  { name:'Character Study', desc:'Pick one person inside the story — the servant, the shepherd, the sower — and study their choices, motives and outcome as a case study of the theme.' },
+  { name:'Chronological Reading', desc:'Read the Old Testament root passage, then the Gospel passage, then the apostolic passage in that order, noticing what each generation adds to the picture.' },
+  { name:'Teach-It-Back', desc:'After studying alone, explain the topic out loud to another family member from memory, with no notes, then let them ask you questions about it.' },
+  { name:'Object Lesson', desc:'Find or build a simple physical object that matches the topic — bread, salt, a small lamp, a rock — and use it while explaining the idea to someone younger.' },
+  { name:'Compare Translations', desc:'Read the key verse in two or three different Bible translations side by side and note which words changed — and whether that changes what you understood.' },
+  { name:'Quiet Reflection', desc:'Read the passage slowly once, then sit in silence for a few minutes turning over a single phrase before writing down what stood out to you.' },
+];
+
+/** @typedef {{label:string, items:string[]}} QuestionGroup */
+/** @type {QuestionGroup[]} */
+const QUESTIONS = [
+  { label:'Observe', items:[
+    'What word, image or action repeats more than once in this thread?',
+    'Who is present in this passage — and who is conspicuously missing?',
+    'What happens right before and right after this passage in its own book?',
+  ]},
+  { label:'Interpret', items:[
+    'Does the original Hebrew or Greek word (check the Glossary) change or sharpen the meaning here?',
+    'How does the Old Testament root passage help explain what Jesus meant by it?',
+    'What would this have meant to someone actually there — a shepherd, a bride, a temple worker?',
+  ]},
+  { label:'Apply', items:[
+    'Where in my own life this week does this theme actually show up?',
+    'What is one thing I need to start, stop, or change because of this?',
+    'What would it look like to trust God the way this passage is asking me to?',
+  ]},
+  { label:'Teach', items:[
+    'If I had sixty seconds to explain this theme to someone who had never heard it, what would I say?',
+    'What question would I ask afterward to check whether they actually understood it?',
+    'What everyday object or story could make this idea stick for a child?',
+  ]},
+];
+
+/** @typedef {{name:string, desc:string}} PresentationMethod */
+/** @type {PresentationMethod[]} */
+const PRESENTATION_METHODS = [
+  { name:'Teach the Family', desc:'Sit the family down for five minutes and walk them through your topic like a short devotional talk.' },
+  { name:'Skit or Roleplay', desc:'Act out the Bible story, or a modern-day parallel to it, using whatever simple props are around.' },
+  { name:'Poster or Drawing', desc:'Sketch the thread’s key images — a vine, a lamp, a stone — on paper and use it as a visual aid while you explain.' },
+  { name:'One-Sentence Creed', desc:'Boil the whole topic down to one sentence you can say from memory, then explain why every word in it matters.' },
+  { name:'Then-and-Now Demonstration', desc:'Bring out a real object — bread, salt, oil — and explain what it meant then and what it still means now.' },
+  { name:'Song or Poem', desc:'Write four lines of a song, poem or rap that captures the theme, then perform it for the family.' },
+  { name:'Question Panel', desc:'Let the rest of the family ask you questions about your topic and answer them without looking at notes.' },
+  { name:'Written Reflection', desc:'Write a half-page reflection in a shared family journal that others can read later, in their own time.' },
+];
+
+/* ===== Icon library — hand-authored 24x24 line icons. Each entry is inner
+   SVG markup only; stroke/fill/width are set once on the <svg> wrapper via
+   icon(), so individual paths stay short. ===== */
+const ICONS = {
+  book: '<path d="M4 5c3-1.5 6-1.5 8 0v14c-2-1.5-5-1.5-8 0V5z"/><path d="M20 5c-3-1.5-6-1.5-8 0v14c2-1.5 5-1.5 8 0V5z"/>',
+  sprout: '<path d="M12 21V10"/><path d="M12 10c0-4 3-6 6-6 0 4-2 7-6 6z"/><path d="M12 13c0-3-2-5-5-5 0 3 2 5 5 5z"/>',
+  lamp: '<path d="M4 15c0-3 3-5 8-5s8 2 8 5-4 4-8 4-8-1-8-4z"/><path d="M9 10c1-2 2-4 3-6 1 2 2 4 3 6"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5L9.5 14.5"/><path d="M14.5 9.5L11 11"/><path d="M9.5 14.5L11 11"/>',
+  building: '<path d="M4 21h16"/><path d="M6 21V9l6-4 6 4v12"/><path d="M9 21v-8h2v8"/><path d="M13 21v-8h2v8"/>',
+  towel: '<path d="M4 6h16v3H4z"/><path d="M4 9c0 6 2 9 8 9s8-3 8-9"/>',
+  rings: '<circle cx="9" cy="14" r="4.2"/><circle cx="15" cy="14" r="4.2"/>',
+  tag: '<path d="M3 11l8-8h7v7l-8 8-7-7z"/><circle cx="15" cy="6.5" r="1.2"/>',
+  crown: '<path d="M4 18h16"/><path d="M4 18l-1-9 5 4 4-7 4 7 5-4-1 9z"/>',
+  cactus: '<path d="M12 21V8"/><path d="M12 10c0-2-2-3-4-3v5c2 0 4-1 4-2z"/><path d="M12 12c0-2 2-3 4-3v5c-2 0-4-1-4-2z"/><path d="M9 5a3 3 0 116 0"/>',
+  cup: '<path d="M6 4h12l-1 9a5 5 0 01-10 0L6 4z"/><path d="M9 21h6"/><path d="M12 17v4"/>',
+  leaf: '<path d="M6 20C6 10 12 4 20 4c0 8-6 14-14 14z"/><path d="M6 20c2-4 5-7 9-9"/>',
+  sickle: '<path d="M6 18a8 8 0 1110-14"/><path d="M16 4l3 1-1 3"/>',
+  flame: '<path d="M12 3c2 4-2 5-2 8a4 4 0 108 0c0-2-2-3-2-5 2 1 4 4 4 7a6 6 0 11-12 0c0-4 3-5 4-10z"/>',
+  crook: '<path d="M8 3v14a4 4 0 004 4"/><path d="M8 3a3 3 0 106 0"/>',
+  loaf: '<path d="M4 12c0-4 4-7 8-7s8 3 8 7-4 6-8 6-8-2-8-6z"/><path d="M8 8l1 4"/><path d="M16 8l-1 4"/><path d="M12 7v5"/>',
+  droplet: '<path d="M12 3s7 8 7 13a7 7 0 11-14 0c0-5 7-13 7-13z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4"/>',
+  eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+  bubbles: '<circle cx="13" cy="15" r="4"/><circle cx="7" cy="8" r="2"/><circle cx="16.5" cy="6.5" r="1.5"/>',
+  shaker: '<path d="M9 3h6l1 3H8l1-3z"/><path d="M8 6h8l-1 14a2 2 0 01-2 2h-2a2 2 0 01-2-2L8 6z"/><path d="M11 10h.01"/><path d="M13 13h.01"/><path d="M11 16h.01"/>',
+  boulder: '<path d="M4 17c0-4 4-9 8-9s8 5 8 9-3 4-8 4-8-1-8-4z"/>',
+  signpost: '<path d="M12 3v18"/><path d="M12 6h6l-2 3 2 3h-6"/>',
+  shirt: '<path d="M8 4l4 2 4-2 3 3-3 3v9H8v-9L5 7l3-3z"/>',
+  door: '<path d="M6 21V4h12v17"/><path d="M6 21h12"/><path d="M14 12h.01"/>',
+  curtain: '<path d="M4 4c2 3 2 13 0 16"/><path d="M20 4c-2 3-2 13 0 16"/><path d="M4 4h16"/><path d="M9 4c1 4 1 12 0 16"/><path d="M15 4c-1 4-1 12 0 16"/>',
+  calendar: '<path d="M4 5h16v16H4z"/><path d="M4 9h16"/><path d="M8 3v4"/><path d="M16 3v4"/>',
+  mountain: '<path d="M3 20l6-11 4 6 2-3 6 8z"/>',
+  people: '<circle cx="8" cy="8" r="3"/><path d="M2 21c0-4 3-6 6-6s6 2 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M13 21c.4-3.2 2.6-5 5-5s4.9 2 5.2 5"/>',
+  scroll: '<path d="M6 4h9a3 3 0 013 3v13a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M15 4v4h4"/>',
+  headphones: '<path d="M4 15v-3a8 8 0 0116 0v3"/><path d="M4 15a2 2 0 002 2h1v-5H6a2 2 0 00-2 2z"/><path d="M20 15a2 2 0 01-2 2h-1v-5h1a2 2 0 012 2z"/>',
+  lightbulb: '<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 00-3 11c1 1 1 2 1 3h4c0-1 0-2 1-3a6 6 0 00-3-11z"/>',
+  search: '<circle cx="10" cy="10" r="6"/><path d="M20 20l-5-5"/>',
+  sparkle: '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z"/>',
+  printer: '<path d="M6 9V4h12v5"/><path d="M6 18H4a1 1 0 01-1-1v-5a1 1 0 011-1h16a1 1 0 011 1v5a1 1 0 01-1 1h-2"/><path d="M6 14h12v7H6z"/>',
+  check: '<path d="M4 12l5 5L20 6"/>',
+  chevron: '<path d="M6 9l6 6 6-6"/>',
+  moon: '<path d="M20 14a8 8 0 11-9-9 6.5 6.5 0 009 9z"/>',
+};
+
+function icon(name, cls){
+  const body = ICONS[name] || ICONS.sun;
+  return `<svg viewBox="0 0 24 24" class="${cls||''}" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ===== Persistence — everything lives in localStorage, per device. There
+   is no shared account/database here on purpose: every family member can
+   open this page without needing to sign in to anything, at the cost of
+   checkmarks/notes not syncing between each person's own devices. ===== */
+const STORAGE_KEY = 'goldenThreadsFamily.v1';
+const THEME_KEY = 'goldenThreadsTheme';
+
+function defaultAssignments(){
+  const a = {};
+  TOPICS.forEach(t=>{ a[t.id] = t.defaultAssignee || null; });
+  return a;
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return null;
+}
+
+const _saved = loadState();
+const state = {
+  assignments: (_saved && _saved.assignments) || defaultAssignments(),
+  studied: (_saved && _saved.studied) || {},
+  notes: (_saved && _saved.notes) || {},
+};
+
+function persist(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      assignments: state.assignments, studied: state.studied, notes: state.notes,
+    }));
+  }catch(e){}
+}
+
+function getThemeChoice(){
+  try{ return localStorage.getItem(THEME_KEY) || 'auto'; }catch(e){ return 'auto'; }
+}
+function cycleTheme(){
+  const cur = getThemeChoice();
+  const next = cur === 'auto' ? 'light' : cur === 'light' ? 'dark' : 'auto';
+  try{
+    if(next === 'auto') localStorage.removeItem(THEME_KEY);
+    else localStorage.setItem(THEME_KEY, next);
+  }catch(e){}
+  if(next === 'auto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', next);
+  renderAll();
+}
+function themeButtonLabel(){
+  const cur = getThemeChoice();
+  return cur === 'light' ? 'Light' : cur === 'dark' ? 'Dark' : 'Auto';
+}
+function themeButtonIcon(){
+  return getThemeChoice() === 'dark' ? 'moon' : 'sun';
+}
+
+/* Transient, non-persisted UI state. */
+let currentTab = 'family';
+let searchQuery = '';
+let lastToggledKey = null;
+let flashTopicId = null;
+const openDetails = new Set();
+
+function onDetailsToggle(id, isOpen){
+  if(isOpen) openDetails.add(id);
+  else openDetails.delete(id);
+}
+
+const TAB_META = {
+  family:   { label:'Family Plan',   icon:'people' },
+  library:  { label:'Full Library',  icon:'book' },
+  glossary: { label:'Glossary',      icon:'scroll' },
+  media:    { label:'Further Study', icon:'headphones' },
+  methods:  { label:'Study Methods', icon:'lightbulb' },
+};
+const VIEWS = {
+  family: renderFamilyPlan,
+  library: renderLibrary,
+  glossary: renderGlossary,
+  media: renderMedia,
+  methods: renderStudyMethods,
+};
+
+function switchTab(key){
+  currentTab = key;
+  searchQuery = '';
+  renderAll();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function washClass(personId){
+  return { wedho:'wash-wed', miranda:'wash-mir', elizabeth:'wash-eli', lunathi:'wash-lun' }[personId] || '';
+}
+function iconClass(personId){
+  return { wedho:'icon-wed', miranda:'icon-mir', elizabeth:'icon-eli', lunathi:'icon-lun' }[personId] || 'icon-none';
+}
+function progressFor(personId){
+  const topics = TOPICS.filter(t=>state.assignments[t.id]===personId);
+  const done = topics.filter(t=>state.studied[t.id]).length;
+  return { done, total: topics.length };
+}
+
+function toggleStudied(id){
+  state.studied[id] = !state.studied[id];
+  lastToggledKey = state.studied[id] ? id : null;
+  persist();
+  renderAll();
+}
+function setAssignment(id, personId){
+  state.assignments[id] = personId || null;
+  persist();
+  renderAll();
+}
+function saveNote(id, value){
+  state.notes[id] = value;
+  persist();
+}
+
+function topicRow(t, personId){
+  const studied = !!state.studied[t.id];
+  const note = state.notes[t.id] || '';
+  const pop = (lastToggledKey === t.id) ? 'animate-pop' : '';
+  return `
+  <details class="rounded-xl bg-ink-card/60 border border-[rgb(var(--c-text-faint)/0.15)]" data-flash-target="${t.id}" ${openDetails.has(t.id) ? 'open' : ''} ontoggle="onDetailsToggle('${t.id}', this.open)">
+    <summary class="flex items-center gap-2 px-3 py-2.5">
+      <button type="button" onclick="event.stopPropagation();toggleStudied('${t.id}')"
+        class="w-5 h-5 rounded border-2 flex-none flex items-center justify-center ${pop}"
+        style="border-color:currentColor;${studied?'background:currentColor;':''}" title="Mark studied">
+        ${studied ? `<span class="text-ink">${icon('check','w-3.5 h-3.5')}</span>` : ''}
+      </button>
+      <span class="${iconClass(personId)} flex-none">${icon(t.icon,'w-5 h-5')}</span>
+      <span class="font-ui text-sm sm:text-base flex-1 min-w-0 truncate">${t.title}</span>
+      <select onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+        onchange="event.stopPropagation();setAssignment('${t.id}',this.value)"
+        class="font-ui text-xs bg-transparent border border-[rgb(var(--c-text-faint)/0.35)] rounded px-1.5 py-1 no-print">
+        <option value="" ${!personId?'selected':''}>Unassigned</option>
+        ${PEOPLE.map(p=>`<option value="${p.id}" ${personId===p.id?'selected':''}>${p.name}</option>`).join('')}
+      </select>
+      <span class="text-parchment-faint">${icon('chevron','w-4 h-4')}</span>
+    </summary>
+    <div class="px-3 pb-4 pt-1 space-y-2 font-ui text-sm">
+      <p class="italic text-parchment-dim">${t.thread}</p>
+      ${t.blurb ? `<p class="text-parchment-dim leading-relaxed">${t.blurb}</p>` : ''}
+      <label class="block text-xs text-parchment-faint mt-2">Your notes (saved on this device):</label>
+      <textarea onchange="saveNote('${t.id}', this.value)" rows="2"
+        class="w-full rounded-lg border border-[rgb(var(--c-text-faint)/0.3)] bg-ink/40 px-2 py-1.5 text-sm font-ui" placeholder="What stood out to you?">${escapeHtml(note)}</textarea>
+    </div>
+  </details>`;
+}
+
+function pickSurpriseTopic(){
+  const pool = TOPICS.filter(t=>!state.studied[t.id]);
+  const list = pool.length ? pool : TOPICS;
+  const t = list[Math.floor(Math.random()*list.length)];
+  currentTab = 'family';
+  flashTopicId = t.id;
+  openDetails.add(t.id);
+  renderAll();
+}
+
+function renderFamilyPlan(){
+  const overallDone = TOPICS.filter(t=>state.studied[t.id]).length;
+  return `
+  <div class="hero-band rounded-2xl p-5 sm:p-6 mb-6 border border-[rgb(var(--c-text-faint)/0.2)]">
+    <p class="font-ui text-sm sm:text-base leading-relaxed">
+      <strong class="font-display text-gold-bright">This is a study aid, not a substitute for study.</strong>
+      Reading a topic card is the start, not the finish — real progress happens when you wrestle with the passages
+      yourself, then explain what you found to someone else in the family. Check the
+      <button type="button" class="underline decoration-dotted underline-offset-2" onclick="switchTab('methods')">Study Methods</button>
+      tab for questions, methods and ways to present what you've learned.
+    </p>
+    <div class="mt-4 flex flex-wrap items-center gap-3">
+      <div class="flex-1 min-w-[10rem] h-2.5 rounded-full bg-[rgb(var(--c-text-faint)/0.2)] overflow-hidden">
+        <div class="h-full bg-gold bar-fill" style="width:${TOPICS.length? Math.round(overallDone/TOPICS.length*100):0}%"></div>
+      </div>
+      <span class="font-ui text-xs text-parchment-dim whitespace-nowrap">${overallDone} / ${TOPICS.length} studied — whole family</span>
+      <button type="button" onclick="pickSurpriseTopic()" class="icon-btn flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgb(var(--c-gold)/0.5)] text-gold-bright font-ui text-xs whitespace-nowrap hover:bg-[rgb(var(--c-gold)/0.1)] transition no-print">
+        ${icon('sparkle','w-4 h-4')} Surprise Me
+      </button>
+    </div>
+  </div>
+
+  <div class="grid gap-5">
+    ${PEOPLE.map(p=>{
+      const topics = TOPICS.filter(t=>state.assignments[t.id]===p.id).sort((a,b)=>b.complexity-a.complexity);
+      const { done, total } = progressFor(p.id);
+      const pct = total ? Math.round(done/total*100) : 0;
+      return `
+      <section class="rounded-2xl border ${washClass(p.id)} p-4 sm:p-5">
+        <div class="flex items-center gap-3 mb-1">
+          <span class="${iconClass(p.id)}">${icon(p.icon,'w-7 h-7')}</span>
+          <div class="flex-1 min-w-0">
+            <h2 class="font-display text-xl">${p.name} <span class="font-ui text-sm text-parchment-dim font-normal">— ${p.role}</span></h2>
+            <p class="font-ui text-xs text-parchment-dim">${p.tagline}</p>
+          </div>
+          <span class="font-ui text-xs text-parchment-dim whitespace-nowrap">${done}/${total}</span>
+        </div>
+        <div class="h-2 rounded-full bg-[rgb(var(--c-text-faint)/0.18)] overflow-hidden mb-3">
+          <div class="h-full bar-fill ${iconClass(p.id)}" style="width:${pct}%;background:currentColor;"></div>
+        </div>
+        <div class="space-y-2">
+          ${topics.map(t=>topicRow(t, p.id)).join('') || `<p class="font-ui text-xs text-parchment-faint italic">No topics assigned yet.</p>`}
+        </div>
+      </section>`;
+    }).join('')}
+
+    <section class="rounded-2xl border border-[rgb(var(--c-text-faint)/0.25)] p-4 sm:p-5">
+      <h2 class="font-display text-xl mb-1 flex items-center gap-2"><span class="icon-none">${icon('signpost','w-5 h-5')}</span> Unassigned Extension Threads</h2>
+      <p class="font-ui text-xs text-parchment-dim mb-3">Optional deeper threads — assign one to whoever wants to go further on a topic they've already studied.</p>
+      <div class="space-y-2">
+        ${TOPICS.filter(t=>!state.assignments[t.id]).map(t=>topicRow(t, null)).join('') || `<p class="font-ui text-xs text-parchment-faint italic">All threads are currently assigned.</p>`}
+      </div>
+    </section>
+  </div>`;
+}
+
+function renderLibrary(){
+  return `
+  <div class="mb-4">
+    <div class="relative">
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-parchment-faint">${icon('search','w-4 h-4')}</span>
+      <input type="text" value="${escapeHtml(searchQuery)}" oninput="onLibrarySearch(this.value)"
+        placeholder="Search titles, threads, categories…"
+        class="w-full font-ui text-sm rounded-lg border border-[rgb(var(--c-text-faint)/0.35)] bg-ink-card/50 pl-9 pr-3 py-2.5" />
+    </div>
+  </div>
+  <div id="library-results">${buildLibraryResults()}</div>`;
+}
+
+function buildLibraryResults(){
+  const q = searchQuery.trim().toLowerCase();
+  const filtered = TOPICS.filter(t => !q ||
+    t.title.toLowerCase().includes(q) ||
+    t.category.toLowerCase().includes(q) ||
+    t.thread.toLowerCase().includes(q));
+  if(!filtered.length) return `<p class="font-ui text-sm text-parchment-faint italic py-6 text-center">No topics match "${escapeHtml(searchQuery)}".</p>`;
+  const categories = [...new Set(filtered.map(t=>t.category))];
+  return categories.map(cat => `
+    <div class="mb-5">
+      <h3 class="font-display text-sm tracking-wide text-parchment-faint uppercase mb-2">${cat}</h3>
+      <div class="space-y-2">
+        ${filtered.filter(t=>t.category===cat).map(t=>topicRow(t, state.assignments[t.id])).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function onLibrarySearch(value){
+  searchQuery = value;
+  document.getElementById('library-results').innerHTML = buildLibraryResults();
+}
+
+function renderGlossary(){
+  const groups = [
+    { key:'hebrew', label:'Hebrew Terms', cls:'icon-wed' },
+    { key:'greek', label:'Greek Terms', cls:'icon-mir' },
+    { key:'culture', label:'Culture & Practice', cls:'icon-eli' },
+  ];
+  return groups.map(g => {
+    const entries = GLOSSARY.filter(e=>e.category===g.key);
+    if(!entries.length) return '';
+    return `
+    <section class="mb-6">
+      <h2 class="font-display text-lg mb-3 flex items-center gap-2"><span class="${g.cls}">${icon('scroll','w-5 h-5')}</span> ${g.label}</h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        ${entries.map(e=>`
+          <div class="rounded-xl border border-[rgb(var(--c-text-faint)/0.2)] bg-ink-card/50 p-3.5 card-hover">
+            <p class="font-display text-base">${e.term} <span class="font-body italic text-parchment-dim text-sm">${e.script}</span></p>
+            <p class="font-ui text-sm text-parchment-dim leading-relaxed mt-1">${e.meaning}</p>
+          </div>`).join('')}
+      </div>
+    </section>`;
+  }).join('');
+}
+
+function renderMedia(){
+  return MEDIA.map(g => `
+    <section class="mb-6">
+      <h2 class="font-display text-lg mb-1 flex items-center gap-2"><span class="icon-none">${icon('headphones','w-5 h-5')}</span> ${g.heading}</h2>
+      <p class="font-ui text-xs text-parchment-dim mb-3">${g.note}</p>
+      <div class="grid gap-3 sm:grid-cols-2">
+        ${g.items.map(it=>`
+          <div class="rounded-xl border border-[rgb(var(--c-text-faint)/0.2)] bg-ink-card/50 p-3.5 card-hover">
+            <p class="font-display text-base">${it.title}</p>
+            <p class="font-ui text-xs text-parchment-faint">${it.author} · ${it.kind}</p>
+            <p class="font-ui text-sm text-parchment-dim leading-relaxed mt-1.5">${it.blurb}</p>
+          </div>`).join('')}
+      </div>
+    </section>`).join('');
+}
+
+function renderStudyMethods(){
+  return `
+  <div class="hero-band rounded-2xl p-5 sm:p-6 mb-6 border border-[rgb(var(--c-text-faint)/0.2)]">
+    <h2 class="font-display text-xl text-gold-bright mb-2">This is a study aid — not a shortcut</h2>
+    <p class="font-ui text-sm sm:text-base leading-relaxed mb-2">
+      Nothing on this page replaces sitting with your Bible open. Every topic card is a starting map, not a finished
+      answer — it points you to the passages; reading and wrestling with them is still yours to do. The goal for each
+      person isn't to finish a checklist, it's to reach two things: understanding a theme well enough to explain it in
+      your own words, and being ready to teach or discuss it with someone else in the family, so what you've learned
+      actually gets passed on rather than staying private.
+    </p>
+    <p class="font-ui text-sm sm:text-base leading-relaxed">
+      Use the questions and methods below to study actively rather than just reading passively, and use the
+      presentation ideas to share what you found — teaching something is one of the fastest ways to discover whether
+      you really understood it.
+    </p>
+  </div>
+
+  <section class="mb-8">
+    <h2 class="font-display text-lg mb-3">Study Methods</h2>
+    <div class="grid gap-3 sm:grid-cols-2">
+      ${STUDY_METHODS.map((m,i)=>`
+        <div class="rounded-xl border border-[rgb(var(--c-text-faint)/0.2)] bg-ink-card/50 p-3.5 card-hover flex gap-3">
+          <span class="step-badge bg-[rgb(var(--c-gold)/0.18)] text-gold-bright">${i+1}</span>
+          <div>
+            <p class="font-display text-base">${m.name}</p>
+            <p class="font-ui text-sm text-parchment-dim leading-relaxed mt-1">${m.desc}</p>
+          </div>
+        </div>`).join('')}
+    </div>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="font-display text-lg mb-3">Questions Worth Asking — of any topic</h2>
+    <div class="grid gap-4 sm:grid-cols-2">
+      ${QUESTIONS.map(group=>`
+        <div class="rounded-xl border border-[rgb(var(--c-text-faint)/0.2)] bg-ink-card/50 p-3.5">
+          <p class="font-display text-base text-gold-bright mb-2">${group.label}</p>
+          <ul class="space-y-1.5 font-ui text-sm text-parchment-dim leading-relaxed list-disc list-inside">
+            ${group.items.map(q=>`<li>${q}</li>`).join('')}
+          </ul>
+        </div>`).join('')}
+    </div>
+  </section>
+
+  <section class="mb-6">
+    <h2 class="font-display text-lg mb-3">Ways to Present What You Learned</h2>
+    <div class="grid gap-3 sm:grid-cols-2">
+      ${PRESENTATION_METHODS.map((m,i)=>`
+        <div class="rounded-xl border border-[rgb(var(--c-text-faint)/0.2)] bg-ink-card/50 p-3.5 card-hover flex gap-3">
+          <span class="step-badge bg-[rgb(var(--c-azure)/0.18)] text-azure-bright">${i+1}</span>
+          <div>
+            <p class="font-display text-base">${m.name}</p>
+            <p class="font-ui text-sm text-parchment-dim leading-relaxed mt-1">${m.desc}</p>
+          </div>
+        </div>`).join('')}
+    </div>
+  </section>`;
+}
+
+function printCurrentView(){
+  document.querySelectorAll('#tab-content details').forEach(d=>{ d.open = true; });
+  setTimeout(()=>window.print(), 50);
+}
+
+function shellHTML(){
+  return `
+  <header class="border-b border-[rgb(var(--c-text-faint)/0.25)] bg-ink-raised/60">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h1 class="font-display text-2xl sm:text-3xl tracking-wide text-gold-bright flex items-center gap-2">
+          <span class="icon-wed">${icon('book','w-7 h-7')}</span> Golden Threads
+        </h1>
+        <p class="font-ui text-sm text-parchment-dim mt-1 max-w-xl">
+          A study aid, not a shortcut — see the <button type="button" class="underline decoration-dotted underline-offset-2" onclick="switchTab('methods')">Study Methods</button> tab before you begin.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 no-print">
+        <button type="button" onclick="printCurrentView()" class="icon-btn flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgb(var(--c-text-faint)/0.35)] font-ui text-sm hover:bg-ink-card transition" title="Print this view">
+          ${icon('printer','w-4 h-4')} <span class="hidden sm:inline">Print</span>
+        </button>
+        <button type="button" onclick="cycleTheme()" class="icon-btn flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgb(var(--c-text-faint)/0.35)] font-ui text-sm hover:bg-ink-card transition">
+          ${icon(themeButtonIcon(),'w-4 h-4')} <span>${themeButtonLabel()}</span>
+        </button>
+      </div>
+    </div>
+    <nav class="max-w-5xl mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto scrollbar-thin no-print" role="tablist">
+      ${Object.keys(TAB_META).map(key=>{
+        const m = TAB_META[key];
+        const active = key===currentTab;
+        return `<button type="button" role="tab" aria-selected="${active}" onclick="switchTab('${key}')"
+          class="tab-btn flex items-center gap-1.5 whitespace-nowrap px-3 py-2.5 border-b-2 ${active?'':'border-transparent'} font-ui text-sm ${active?'':'text-parchment-dim'} hover:text-gold-bright transition">
+          ${icon(m.icon,'w-4 h-4')} ${m.label}
+        </button>`;
+      }).join('')}
+    </nav>
+  </header>
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6">
+    <div id="tab-content"></div>
+  </main>
+  <footer class="max-w-5xl mx-auto px-4 sm:px-6 py-8 text-xs text-parchment-faint font-ui no-print space-y-1">
+    <p>Saved on this device only — each family member's checkmarks, notes and theme choice stay on the device they use.</p>
+    <p>Designed and Developed by <a href="https://tishbitedigital.co.za" target="_blank" rel="noopener noreferrer" class="underline decoration-dotted underline-offset-2 hover:text-gold-bright transition">Tishbite Digital</a></p>
+  </footer>`;
+}
+
+function renderAll(){
+  const app = document.getElementById('app');
+  app.innerHTML = shellHTML();
+  const content = document.getElementById('tab-content');
+  content.innerHTML = VIEWS[currentTab]();
+  content.classList.add('view-enter');
+  if(flashTopicId){
+    const el = document.querySelector(`[data-flash-target="${flashTopicId}"]`);
+    if(el){
+      el.classList.add('animate-flash');
+      el.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+    flashTopicId = null;
+  }
+}
+
+renderAll();
+</script>
+</body>
+</html>
