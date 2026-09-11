@@ -130,6 +130,8 @@
   .wash-mir{ background:rgb(var(--c-sage) / 0.07); border-color:rgb(var(--c-sage) / 0.3); }
   .wash-eli{ background:rgb(var(--c-ember) / 0.07); border-color:rgb(var(--c-ember) / 0.3); }
   .wash-lun{ background:rgb(var(--c-clay) / 0.07); border-color:rgb(var(--c-clay) / 0.3); }
+  .icon-azure{ color:rgb(var(--c-azure-2)); }
+  .wash-azure{ background:rgb(var(--c-azure) / 0.07); border-color:rgb(var(--c-azure) / 0.3); }
 
   .hero-band{
     background: linear-gradient(120deg,
@@ -215,6 +217,9 @@ const PEOPLE = [
  * @property {string} [character]
  * @property {string} [wordBridge]
  * @property {string[]} [glossary]  glossary term ids referenced
+ * @property {string} [forChild]  how to summarize and teach this theme to a nearly-5-year-old
+ * @property {{title:string, author:string, note:string}} [recommendedReading]  a book to read alongside this topic
+ * @property {string} [outreach]  ways this theme suggests making friends and recognizing chances to share the gospel
  */
 
 /** @type {Topic[]} */
@@ -227,7 +232,10 @@ const TOPICS = [
     jesus:['“Destroy this temple” — spoke of his own body — John 2:19-21','“On this rock I will build my church” — Matthew 16:18','Quotes Psalm 118:22 directly, of himself — Matthew 21:42'],
     apostolic:['Peter quotes the same psalm before the Sanhedrin — Acts 4:11','Built into a holy temple, Christ the cornerstone — Ephesians 2:19-22','“You are God’s temple” — 1 Corinthians 3:16-17','Living stones, chief cornerstone — 1 Peter 2:4-8','New Jerusalem has no temple — the Lord and the Lamb are its temple — Revelation 21:22'],
     character:'He builds his dwelling out of what men discard. The most rejected stone becomes the one everything else is measured against.',
-    glossary:['ekklesia','qadosh','veil-practice']
+    glossary:['ekklesia','qadosh','veil-practice'],
+    forChild:'Build a small tower of blocks together and pull one from low down without knocking it over — show her that some blocks matter more than others for holding the rest up. Say: “Jesus is like the one stone that never gets thrown away — He holds everything else up.” Let her place the first “special” block every time you build.',
+    recommendedReading:{ title:'Patriarchs and Prophets', author:'Ellen G. White', note:'Its chapters on building the sanctuary show why a physical building mattered so much to God, long before Jesus ever called Himself a temple.' },
+    outreach:'Notice people who feel like they don’t “fit the build” — new arrivals, visitors, anyone left out of the group photo. Making room for them is a small, real echo of the rejected stone becoming the cornerstone, and it’s often the simplest door into a real conversation about faith.'
   },
   {
     id:'servant', icon:'towel', title:'The Servant / Suffering Servant', category:'Sight & Identity Restored', complexity:4, defaultAssignee:'wedho',
@@ -237,7 +245,10 @@ const TOPICS = [
     apostolic:['“Took the form of a servant… therefore God exalted him” — Philippians 2:5-11','Philip begins with this very scripture to preach Jesus — Acts 8:30-35','Sustained quotation of Isaiah 53 applied to Christ’s suffering — 1 Peter 2:21-25'],
     character:'Power that empties itself voluntarily is not weakness — it is the exact shape of the character he wants formed in us.',
     wordBridge:'Greek <b>doulos</b> (δοῦλος) is a bondservant, not a hired hand — someone bound by relationship, not contract. Philippians 2 says Christ took that shape on purpose.',
-    glossary:['doulos','chesed']
+    glossary:['doulos','chesed'],
+    forChild:'Wash her hands for her one evening, gently, and say: “Jesus did this for His friends’ feet, to show them what a big person’s love looks like — it kneels down.” Let her try washing a sibling’s or a doll’s hands the same way.',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its account of the footwashing and the days leading to the cross shows exactly what deliberate, costly service looked like in Jesus’s own hands.' },
+    outreach:'Offer to help with something nobody wants to do — dishes after someone else’s event, carrying something heavy, sitting with the person no one is talking to. Practical, unasked-for service earns trust faster than words do, and it often opens the door to being asked “why did you do that?”'
   },
   {
     id:'marriage', icon:'rings', title:'Marriage, Bride & Bridegroom', category:'Kingdom & Judgment', complexity:4, defaultAssignee:'wedho',
@@ -247,7 +258,10 @@ const TOPICS = [
     apostolic:['“Betrothed you to one husband” — 2 Corinthians 11:2','Christ loved the church as a husband loves his wife — “a profound mystery” — Ephesians 5:25-32','Marriage supper of the Lamb — Revelation 19:7-9','New Jerusalem as the bride — Revelation 21:2,9'],
     character:'Covenant, not contract. He keeps pursuing rather than discarding — the whole of Hosea is God refusing to give up on an unfaithful wife.',
     wordBridge:'Greek <b>nymphios</b> (νυμφίος), “bridegroom,” only makes sense against a real betrothal custom — see the Betrothal Customs entry in the glossary.',
-    glossary:['nymphios','betrothal-practice','chesed']
+    glossary:['nymphios','betrothal-practice','chesed'],
+    forChild:'Tell it like a story: “A King’s Son is coming back for His bride, and He’s already gone to get a room ready for her.” Ask her what she’d want ready and waiting if someone she loved was coming to get her.',
+    recommendedReading:{ title:'The Great Controversy', author:'Ellen G. White', note:'Its closing chapters describe the wedding and homecoming this whole theme has been building toward from Hosea onward.' },
+    outreach:'Faithfulness in your own small commitments — showing up when you said you would, keeping a promise to a friend — is the most visible sermon on covenant love you’ll ever preach. People notice who keeps their word in a culture that mostly doesn’t.'
   },
   {
     id:'name', icon:'tag', title:'Name & New Name', category:'Sight & Identity Restored', complexity:4, defaultAssignee:'wedho',
@@ -257,7 +271,10 @@ const TOPICS = [
     apostolic:['“The name that is above every name” — Philippians 2:9-11','“No other name under heaven by which we must be saved” — Acts 4:12','A white stone with a new name written on it — Revelation 2:17','“I will write on him the name of my God… and my own new name” — Revelation 3:12'],
     character:'Salvation includes a new identity, not just a cancelled debt — he doesn’t just clear your record, he tells you who you are now.',
     wordBridge:'Hebrew <b>shem</b> (שֵם) is never just a label — it carries a person’s character and authority. To act “in his name” is to act under his actual authority.',
-    glossary:['shem']
+    glossary:['shem'],
+    forChild:'Talk about what her own name means to you — that you chose it and love saying it. Then say: “God gives new names too, to people He loves, once they belong to Him.” Give her a small, kind nickname just between the two of you as a picture of that.',
+    recommendedReading:{ title:'Steps to Christ', author:'Ellen G. White', note:'Its chapters on becoming a child of God describe the new identity that comes with belonging to Him — which is exactly what a new name marks.' },
+    outreach:'Learn and use people’s names — really learn them, ask how to say them right, use them the second time you meet, not just the first. It’s a small thing that tells someone “you’re not invisible to me,” often the first brick of a real friendship.'
   },
   {
     id:'kingdom', icon:'crown', title:'The Kingdom', category:'Kingdom & Judgment', complexity:4, defaultAssignee:'wedho',
@@ -266,7 +283,10 @@ const TOPICS = [
     jesus:['The constant subject of the parables — Matthew 13; Mark 4; Luke 13','“The kingdom of God is at hand” — Mark 1:15','“The kingdom of God is in the midst of you” — Luke 17:20-21','“My kingdom is not of this world” — John 18:36'],
     apostolic:['Forty days teaching about the kingdom — Acts 1:3','Delivers the kingdom to God the Father — 1 Corinthians 15:24-25','Transferred into the kingdom of his Son — Colossians 1:13','“The kingdom of the world has become the kingdom of our Lord” — Revelation 11:15'],
     character:'His reign advances quietly — seed, leaven, seed growing secretly — long before it arrives visibly and finally.',
-    glossary:['parousia','ekklesia']
+    glossary:['parousia','ekklesia'],
+    forChild:'Plant one seed with her in a cup and check it together each day. Say: “You can’t see it working under the dirt, but it’s growing — that’s what Jesus said His kingdom is like.” Let the daily check become a small ritual you both look forward to.',
+    recommendedReading:{ title:'Christ’s Object Lessons', author:'Ellen G. White', note:'Its chapters on the kingdom parables — the sower, the mustard seed, the leaven — unpack exactly this hidden, certain kind of growth.' },
+    outreach:'Live like the kingdom is already breaking in around you — small, quiet kindnesses, not just waiting for a “big” evangelistic moment. Most people first notice the kingdom through an unhurried, patient life, long before they ever ask what you believe.'
   },
 
   // ---------------- MIRANDA — upper-mid complexity ----------------
@@ -277,7 +297,10 @@ const TOPICS = [
     jesus:['Forty days in the wilderness, tempted — answers each test by quoting Deuteronomy — Matthew 4:1-11'],
     apostolic:['The wilderness generation “written for our instruction” — 1 Corinthians 10:1-11','“Do not harden your hearts… a rest still remains” — Hebrews 3:7–4:11','The woman flees into the wilderness, nourished for a time — Revelation 12:6,14'],
     character:'Vicarious obedience, not just vicarious punishment — Christ re-walks Israel’s exact failure and answers it perfectly, on our behalf.',
-    glossary:['wilderness-geography']
+    glossary:['wilderness-geography'],
+    forChild:'Skip a snack for one hour together and talk about how waiting feels. Say: “Jesus was hungry in the desert too, and He chose to trust God instead of grumbling.” Praise her the next time she waits well for something she wants.',
+    recommendedReading:{ title:'Patriarchs and Prophets', author:'Ellen G. White', note:'Its account of the wilderness wandering shows in detail what Israel’s testing looked like — the very failure Jesus later re-walks and answers in His own wilderness temptation.' },
+    outreach:'Be honest about your own hard seasons instead of performing having it together. People going through their own “wilderness” open up fastest to someone who admits they’ve been thirsty too, not someone who seems never to have struggled.'
   },
   {
     id:'blood', icon:'cup', title:'Blood, Lamb & Sacrifice', category:'Covenant & Identity', complexity:3, defaultAssignee:'miranda',
@@ -287,7 +310,10 @@ const TOPICS = [
     apostolic:['John the Baptist: “Behold, the Lamb of God” — John 1:29','Philip preaches Christ from Isaiah 53 to the Ethiopian — Acts 8:32-35','Redeemed with precious blood, a lamb without blemish — 1 Peter 1:18-19','“Without shedding of blood, no forgiveness” — Hebrews 9:22','The Lamb who was slain, worthy — Revelation 5:6,9,12'],
     character:'Love that substitutes itself. The Shepherd theme and the Lamb theme meet at the same cross — he is both the one who saves and the price paid.',
     wordBridge:'Hebrew <b>kaphar</b> (כָפַר) means both “cover” and “atone” — the sacrificial system covers sin by dealing with it, not by hiding it.',
-    glossary:['kaphar','atonement-practice']
+    glossary:['kaphar','atonement-practice'],
+    forChild:'Point gently to a small scrape or plaster and say: “Blood carries life in it — that’s why the Bible says Jesus gave His blood, He gave His whole life for us, like the lamb that saved the first Passover families.” Keep it gentle, not graphic.',
+    recommendedReading:{ title:'Patriarchs and Prophets', author:'Ellen G. White', note:'Its chapter on the Passover walks through the original night the doorpost blood protected Israel’s families — the picture Jesus later fulfills as the true Lamb.' },
+    outreach:'Be willing to talk plainly about the cost of real love — that it isn’t free, it’s paid for by someone. Sharing what the cross personally cost Jesus, in your own words, is often more disarming to a skeptical friend than any argument.'
   },
   {
     id:'vine', icon:'leaf', title:'Vine, Vineyard & Fruit', category:"God's Household", complexity:3, defaultAssignee:'miranda',
@@ -297,7 +323,10 @@ const TOPICS = [
     apostolic:['Fruit of the Spirit — Galatians 5:22-23','Wild branches grafted in — Romans 11:17-24','The grapes of the earth, gathered for the winepress of wrath — Revelation 14:18-20'],
     character:'Abiding produces what performance cannot. He is patient with the fig tree, but the point of the vine was always fruit.',
     wordBridge:'Greek <b>ampelos</b> (ἄμπελος), “vine,” understood a real 1st-century farming system — see Vineyard Tenancy in the glossary.',
-    glossary:['ampelos','vineyard-tenancy']
+    glossary:['ampelos','vineyard-tenancy'],
+    forChild:'Water a small plant together every day for a week. Say: “A branch can’t grow fruit by trying hard — it just has to stay attached to the vine. That’s how we stay close to Jesus.” Let her notice any new growth as the week goes on.',
+    recommendedReading:{ title:'Christ’s Object Lessons', author:'Ellen G. White', note:'Its chapter on the vine and the vineyard ties John 15 back to Israel’s own prophetic self-description in Isaiah 5 and Psalm 80.' },
+    outreach:'Let your life visibly “abide” — steady, unhurried, unstressed — rather than striving to look impressive. People are drawn to calm, fruitful lives long before they ever ask what’s feeding them.'
   },
   {
     id:'harvest', icon:'sickle', title:'Harvest, Sowing & Seed', category:'Kingdom & Judgment', complexity:3, defaultAssignee:'miranda',
@@ -306,7 +335,10 @@ const TOPICS = [
     jesus:['Parable of the sower — Matthew 13:3-9,18-23','Wheat and tares, harvest is the end of the age — Matthew 13:24-30,36-43','“The harvest is plentiful, the laborers few” — Matthew 9:37-38','Mustard seed — Matthew 13:31-32'],
     apostolic:['“Paul planted, Apollos watered, God gave the growth” — 1 Corinthians 3:6-9','“Whatever one sows, that will he reap” — Galatians 6:7-9','The harvest of the earth, one like a son of man with a sickle — Revelation 14:14-16'],
     character:'He lets growth happen where it can’t be watched, but he never loses count of what was sown.',
-    glossary:['threshing-practice']
+    glossary:['threshing-practice'],
+    forChild:'Grow something small together, start to finish — cress on a windowsill works well. Say: “God is patient while things grow, but He never forgets what was planted.” Celebrate together on the day it’s ready.',
+    recommendedReading:{ title:'Christ’s Object Lessons', author:'Ellen G. White', note:'Its chapters on the sower and the wheat and tares are the fullest treatment of patient growth and a certain final harvest.' },
+    outreach:'Plant seeds in conversations without expecting an instant harvest — one honest word, one invitation, one shared verse, left to grow in someone’s own time. Following up gently months later, not just once, is often what people actually remember.'
   },
   {
     id:'fire', icon:'flame', title:'Fire & Refining', category:'Covenant & Identity', complexity:3, defaultAssignee:'miranda',
@@ -316,7 +348,10 @@ const TOPICS = [
     apostolic:['Tongues of fire at Pentecost — Acts 2:3','Each one’s work tested by fire — 1 Corinthians 3:13-15','Faith tested by fire, more precious than gold — 1 Peter 1:7','Eyes like a flame of fire — Revelation 1:14','“Buy from me gold refined by fire” — to Laodicea — Revelation 3:18'],
     character:'His holiness burns to purify, not merely to consume — the same fire that judges Laodicea’s lukewarmness is offered to her as gold.',
     wordBridge:'Hebrew <b>ruach</b> (רוַּח) means spirit, breath, and wind all at once — fire and ruach travel together through the Old and New Testaments as signs of God’s active presence.',
-    glossary:['ruach','qadosh']
+    glossary:['ruach','qadosh'],
+    forChild:'Light a candle safely together, with you holding it, then blow it out together. Say: “Fire doesn’t just burn things up — it can also make things pure, like melting gold to get the dirt out.” Talk about God’s presence being like that flame.',
+    recommendedReading:{ title:'Prophets and Kings', author:'Ellen G. White', note:'Its account of Elijah and the prophets shows fire and refining as recurring, deliberate signs of God dealing with His people — the same imagery behind Malachi’s refiner.' },
+    outreach:'Let hard seasons refine rather than harden you, visibly enough that others notice the difference. A person who comes out of difficulty gentler and more grounded, not bitter, becomes someone others want to ask, “how did you get through that?”'
   },
 
   // ---------------- ELIZABETH — accessible, comfort-rich, narrative ----------------
@@ -328,7 +363,10 @@ const TOPICS = [
     apostolic:['“The Shepherd and Overseer of your souls” — 1 Peter 2:25','Elders shepherd the flock, await the Chief Shepherd — 1 Peter 5:2-4','“The great shepherd of the sheep” — Hebrews 13:20','“The Lamb will be their shepherd” — Revelation 7:17'],
     character:'Leadership as pursuit, not control. He doesn’t wait for the lost sheep to find its own way back.',
     wordBridge:'Greek <b>poimen</b> (ποιμήν), “shepherd,” is the same word behind “pastor” — the job was never meant to be management, it was meant to be presence.',
-    glossary:['poimen','shepherding-practice']
+    glossary:['poimen','shepherding-practice'],
+    forChild:'Play a quick hide-and-seek with a stuffed animal and go find it together. Say: “Jesus is like a shepherd who goes looking for the one who’s lost, even if He already has ninety-nine others.” Celebrate finding it the way Jesus celebrates.',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its chapter on the good shepherd draws out exactly why a shepherd who owns the sheep behaves so differently from a hired hand who doesn’t.' },
+    outreach:'Actually go find the person who’s stopped showing up, rather than waiting for them to come back on their own. A single “I noticed you were missing, and I care” text does more relational work than most planned outreach events.'
   },
   {
     id:'bread', icon:'loaf', title:'Bread & Manna', category:"God's Household", complexity:2, defaultAssignee:'elizabeth',
@@ -338,7 +376,10 @@ const TOPICS = [
     apostolic:['One loaf, one body — 1 Corinthians 10:16-17','Institution of the Lord’s Supper — 1 Corinthians 11:23-26','Breaking of bread in the early church — Acts 2:42,46','“The hidden manna” promised to the overcomer — Revelation 2:17'],
     character:'He sustains a day at a time and refuses to be hoarded — manna kept overnight bred worms. Provision that has to be received fresh keeps you coming back to him.',
     wordBridge:'The word <b>manna</b> comes from the Hebrews’ own question, “man hu?” — “what is it?” They named the miracle after their own confusion, and ate it anyway.',
-    glossary:['manna']
+    glossary:['manna'],
+    forChild:'Bake or share a simple loaf of bread together and break it by hand instead of cutting it. Say: “Jesus called Himself the Bread of Life — we need Him every single day, the same way we need food every day.” Say a short thank-you prayer before eating it.',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its accounts of the feeding miracles and Christ’s “bread of life” teaching in John 6 unpack why He chose that image for Himself.' },
+    outreach:'Feed people — literally. Invite someone to a meal, bring food to someone struggling, sit with someone eating alone. Shared food is one of the oldest, most disarming ways to build a real friendship, and it’s exactly the picture Jesus kept reaching for.'
   },
   {
     id:'water', icon:'droplet', title:'Water & Living Water', category:'Covenant & Identity', complexity:2, defaultAssignee:'elizabeth',
@@ -347,7 +388,10 @@ const TOPICS = [
     jesus:['Woman at the well — living water welling up to eternal life — John 4:10-14','“Let him come to me and drink,” rivers of living water — John 7:37-39','His own baptism in the Jordan — Matthew 3:13-17','Washes the disciples’ feet — John 13:5'],
     apostolic:['“The Rock that followed them was Christ” — 1 Corinthians 10:4','Washing of water by the word — Ephesians 5:26','Spring of the water of life, without payment — Revelation 21:6','River of the water of life; “let the thirsty come” — Revelation 22:1,17'],
     character:'Grace is free, abundant, and offered person to person — not a resource you’re pointed toward, but someone who meets you at your own well at noon.',
-    glossary:['chesed']
+    glossary:['chesed'],
+    forChild:'Let her drink a full glass of water after playing outside on a hot day and ask how thirsty she was. Say: “Jesus told a thirsty woman at a well that He could give water that means her heart would never be thirsty again.”',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its account of the woman at the well shows the whole conversation in context, including why Jesus deliberately went out of His way to meet her there.' },
+    outreach:'Meet people where their real thirst is — loneliness, exhaustion, shame — rather than where it’s convenient for you. Jesus deliberately routed through Samaria for one conversation; a friendship that goes out of its way for someone is remembered.'
   },
   {
     id:'light', icon:'sun', title:'Light & Darkness', category:'The Way of Wisdom', complexity:2, defaultAssignee:'elizabeth',
@@ -357,7 +401,10 @@ const TOPICS = [
     apostolic:['“The light shines in the darkness” — John 1:4-5,9','“God is light, in him is no darkness at all” — 1 John 1:5-7','“Once darkness, but now light in the Lord” — Ephesians 5:8','No need of sun or lamp — the Lamb is its lamp — Revelation 21:23-24; 22:5'],
     character:'He isn’t lit from outside; every other light in scripture is borrowed brightness pointing back to him.',
     wordBridge:'Greek <b>logos</b> (λόγος), “word,” is what John calls Jesus in the very verse that introduces light shining in darkness — the light has always been a Person speaking.',
-    glossary:['logos']
+    glossary:['logos'],
+    forChild:'Turn off the lights and light one small candle or torch together. Say: “Just one light can push back a lot of dark — Jesus called Himself the Light of the World, and He wants us to shine too.” Let her be the one holding the light.',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its opening chapters on “God With Us” describe why the incarnation itself is described as light entering darkness.' },
+    outreach:'Be consistently, quietly different in the small stuff — honest, patient, kind when it costs you something — rather than announcing your faith loudly. A steady light is noticed by people long before a loud one is trusted.'
   },
   {
     id:'eyes', icon:'eye', title:'Eyes, Blindness & Sight', category:'Sight & Identity Restored', complexity:2, defaultAssignee:'elizabeth',
@@ -366,7 +413,10 @@ const TOPICS = [
     jesus:['Repeated healings of the blind — John 9; Mark 8:22-25','Quotes Isaiah 6 to explain why he teaches in parables — Matthew 13:13-15','Pharisees called “blind guides” — Matthew 23:16-26','“That those who do not see may see” — John 9:39-41'],
     apostolic:['Paul struck blind on the Damascus road, scales fall from his eyes — Acts 9:3-9,17-18','“The eyes of your heart enlightened” — Ephesians 1:18','Laodicea: “you do not know you are blind… buy salve” — Revelation 3:17-18'],
     character:'He’s willing to be the one who opens eyes at real cost to the one being opened — Paul’s healing came after three days of nothing.',
-    glossary:['qadosh']
+    glossary:['qadosh'],
+    forChild:'Play a short blindfolded game, guiding her gently by the hand for a minute, then take it off. Say: “Jesus loves giving people their sight back — sometimes eyes that don’t work, and sometimes hearts that can’t see who He is yet.” Ask what she noticed most once she could see again.',
+    recommendedReading:{ title:'Acts of the Apostles', author:'Ellen G. White', note:'Its account of Paul’s blindness on the Damascus road and the scales falling from his eyes is one of the clearest “sight restored” stories outside the Gospels.' },
+    outreach:'Ask better questions and really listen, instead of assuming you already see someone’s situation clearly. People open up to those who admit “help me understand” rather than those who arrive with all the answers.'
   },
 
   // ---------------- LUNATHI — concrete, tangible, identity/decision themes ----------------
@@ -378,7 +428,10 @@ const TOPICS = [
     apostolic:['“A little leaven leavens the whole lump” — purge the old leaven — 1 Corinthians 5:6-8','Same proverb, applied to false teaching — Galatians 5:9'],
     character:'He takes small things seriously in both directions — a small compromise spreads exactly like a small grace does.',
     wordBridge:'Greek <b>zyme</b> (ζύμη), “leaven,” was a piece of yesterday’s dough kept back to start tomorrow’s batch — see Leavening Process in the glossary. Try it yourself: bake one loaf with a starter and one without, side by side.',
-    glossary:['zyme','leavening-practice']
+    glossary:['zyme','leavening-practice'],
+    forChild:'Bake two small batches of bread, one with yeast and one without, and compare them the next day. Say: “A tiny bit of yeast changes the whole loaf — that’s what Jesus said about both good things and bad things spreading quietly.” Let her poke the risen dough.',
+    recommendedReading:{ title:'Christ’s Object Lessons', author:'Ellen G. White', note:'Its chapter on the leaven parable explains why Jesus picked something so small and ordinary to describe the kingdom’s hidden spread.' },
+    outreach:'Remember that small, repeated kindness spreads exactly like leaven — one consistent, quiet good habit in a friend group changes its whole “flavor” over time, often more than one big gesture would.'
   },
   {
     id:'salt', icon:'shaker', title:'Salt', category:'The Way of Wisdom', complexity:1, defaultAssignee:'lunathi',
@@ -388,7 +441,10 @@ const TOPICS = [
     apostolic:['“Let your speech be seasoned with salt” — Colossians 4:6'],
     character:'Identity that loses its distinctiveness loses its purpose — he calls his people to change the flavor of a room, not just occupy it.',
     wordBridge:'In the ancient world salt was valuable enough to help pay soldiers and seal binding agreements — see Salt as Covenant Seal in the glossary.',
-    glossary:['salt-practice']
+    glossary:['salt-practice'],
+    forChild:'Let her taste plain food, then the same food with a pinch of salt. Say: “Salt doesn’t have to be loud to change everything — Jesus said that’s what His people should be like in the world.” Let her be the one who adds the pinch.',
+    recommendedReading:{ title:'Thoughts from the Mount of Blessing', author:'Ellen G. White', note:'Its comments on the Sermon on the Mount unpack “you are the salt of the earth” in its original setting.' },
+    outreach:'Bring flavor to a room without dominating it — genuine warmth, humor, honesty — rather than either blending in completely or being preachy. People remember who made a gathering better just by being there.'
   },
   {
     id:'rock', icon:'boulder', title:'Rock & Foundation', category:'The Way of Wisdom', complexity:1, defaultAssignee:'lunathi',
@@ -397,7 +453,10 @@ const TOPICS = [
     jesus:['Wise man builds his house on the rock — Matthew 7:24-27','“On this rock I will build my church” — Matthew 16:18'],
     apostolic:['“The Rock was Christ” — 1 Corinthians 10:4','“No foundation other than the one laid” — 1 Corinthians 3:11','A stone of stumbling, a rock of offense — 1 Peter 2:6-8, quoting Isaiah 28'],
     character:'Steadiness is a character trait before it’s a construction metaphor — what he asks you to build on, he already is.',
-    glossary:[]
+    glossary:[],
+    forChild:'Build two small structures together — one on sand or loose dirt, one on a hard flat tile — and gently test both. Say: “Jesus said a wise person builds their whole life on Him, like building on rock instead of sand.” Let her predict which one will hold.',
+    recommendedReading:{ title:'Thoughts from the Mount of Blessing', author:'Ellen G. White', note:'Its closing comments on the wise and foolish builders explain exactly what “building on the rock” meant to Jesus’s first hearers.' },
+    outreach:'Be the steady, dependable friend — the one people can call at 2am, the one who doesn’t disappear when things get hard. Reliability, over years, is one of the strongest, quietest witnesses there is.'
   },
   {
     id:'way', icon:'signpost', title:'The Way & The Path', category:'The Way of Wisdom', complexity:1, defaultAssignee:'lunathi',
@@ -407,7 +466,10 @@ const TOPICS = [
     apostolic:['The early church literally called “the Way” — Acts 9:2; 19:9,23; 24:14','“A new and living way,” opened through his flesh — Hebrews 10:19-20'],
     character:'He doesn’t just give directions — he is the road, which is why following him is relationship, not compliance.',
     wordBridge:'Hebrew <b>derek</b> (דֶּ֫רֶך) means road, but also “way of life” — the same word for the physical path and the whole direction of a person’s choices.',
-    glossary:['derek']
+    glossary:['derek'],
+    forChild:'Walk a short, familiar path together and let her lead part of it from memory. Say: “Jesus said ‘I am the Way’ — following Him isn’t just knowing directions, it’s walking with a Person the whole way.” Hold her hand for the parts she doesn’t know yet.',
+    recommendedReading:{ title:'Steps to Christ', author:'Ellen G. White', note:'Written specifically to walk a new believer through the very first steps of following Christ, making it the natural companion to this theme.' },
+    outreach:'Literally walk alongside someone through a season rather than just pointing them toward help. Offering to go with a friend to something hard — a hospital visit, a difficult conversation, a first church visit — says more than directions ever could.'
   },
   {
     id:'clothing', icon:'shirt', title:'Clothing & Garments', category:'Covenant & Identity', complexity:1, defaultAssignee:'lunathi',
@@ -417,34 +479,61 @@ const TOPICS = [
     apostolic:['“Put on Christ” at baptism — Galatians 3:27','White robes washed in the blood of the Lamb — Revelation 7:9,14','“Buy white garments” so shame won’t be seen — Revelation 3:18','“Blessed is he who stays awake and keeps his garments” — Revelation 16:15'],
     character:'He covers our shame himself, at his own cost — righteousness is always something we’re clothed in, never something we manage to weave.',
     wordBridge:'Hebrew <b>kaphar</b> (כָפַר), “cover / atone,” is the same root behind the garment God provides in Genesis 3 — not decoration, atonement made wearable.',
-    glossary:['kaphar','crucifixion-practice']
+    glossary:['kaphar','crucifixion-practice'],
+    forChild:'Let her pick a favorite outfit and talk about how good clothes make you feel. Say: “After Adam and Eve made a mistake, they tried to cover themselves with leaves, but God made them real clothes Himself, at a cost — that’s what Jesus does for us too.”',
+    recommendedReading:{ title:'Patriarchs and Prophets', author:'Ellen G. White', note:'Its account of the fall describes in detail why the fig leaves failed and what it meant for God Himself to provide the first covering.' },
+    outreach:'Cover for people rather than exposing them — protect a friend’s dignity when they’ve messed up, instead of gossiping about it. Grace that covers someone at your own social cost is a vivid, personal picture of what this whole theme is about.'
   },
 
   // ---------------- EXTENSION THREADS — unassigned, library-only ----------------
   { id:'oil', icon:'lamp', title:'Oil & Anointing', category:'Extension Thread', complexity:2, defaultAssignee:null, extension:true,
     thread:'Samuel anoints David, "Christ" itself means Anointed One, the ten virgins’ oil, and being anointed to preach good news.',
-    blurb:'Samuel anoints David with oil (1 Samuel 16) → the title "Christ" (Greek <i>Christos</i>) itself means Anointed One → the ten virgins carry oil for their lamps (Matthew 25) → Jesus reads Isaiah 61 and says he was anointed to preach good news to the poor (Luke 4:18).' },
+    blurb:'Samuel anoints David with oil (1 Samuel 16) → the title "Christ" (Greek <i>Christos</i>) itself means Anointed One → the ten virgins carry oil for their lamps (Matthew 25) → Jesus reads Isaiah 61 and says he was anointed to preach good news to the poor (Luke 4:18).',
+    forChild:'Rub a drop of scented oil or lotion on her hands and let her smell it. Say: “A long time ago, oil poured on someone’s head meant ‘you’re chosen for something special’ — Jesus’s own title, Christ, means the Anointed One.”',
+    recommendedReading:{ title:'Prophets and Kings', author:'Ellen G. White', note:'Its account of Samuel’s anointing of David shows the ceremony and meaning behind pouring oil on someone God had chosen.' },
+    outreach:'Notice and name the gifts you see in people — tell a friend specifically what you see God has equipped them for. Being “anointed” often starts, relationally, with someone else noticing first.' },
   { id:'gate', icon:'door', title:'Gate & Door', category:'Extension Thread', complexity:2, defaultAssignee:null, extension:true,
     thread:'Blood on the doorposts, "I am the door," the narrow gate, and twelve gates in a city with no need of walls to hide behind.',
-    blurb:'Blood on the doorposts at Passover (Exodus 12) → "I am the door of the sheep" (John 10:7-9) → the narrow gate (Matthew 7:13) → Christ knocking at Laodicea’s door (Revelation 3:20) → the twelve gates of the New Jerusalem (Revelation 21:12-21).' },
+    blurb:'Blood on the doorposts at Passover (Exodus 12) → "I am the door of the sheep" (John 10:7-9) → the narrow gate (Matthew 7:13) → Christ knocking at Laodicea’s door (Revelation 3:20) → the twelve gates of the New Jerusalem (Revelation 21:12-21).',
+    forChild:'Stand together at a doorway and only let her through when you say it’s safe. Say: “Jesus said ‘I am the door’ — the only safe way into the sheep pen was through the shepherd himself, standing right in the gap.”',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its chapter on the good shepherd explains the actual sheepfold custom behind Jesus calling Himself both shepherd and door.' },
+    outreach:'Be a safe “gate” for people — someone they can be fully honest with without fear of it being used against them. Trustworthy confidentiality is often what earns you the right to speak into someone’s life later.' },
   { id:'priesthood', icon:'building', title:'Priesthood & Mediator', category:'Extension Thread', complexity:3, defaultAssignee:null, extension:true,
     thread:'Aaron’s priesthood, a mysterious king-priest named Melchizedek, and a whole people made priests.',
-    blurb:'Aaron’s priesthood established (Exodus 28-29) → Melchizedek, king and priest with no recorded genealogy (Genesis 14; Psalm 110) → Christ as our great high priest (Hebrews 4-7) → believers made "a kingdom of priests" (1 Peter 2:9; Revelation 1:6).' },
+    blurb:'Aaron’s priesthood established (Exodus 28-29) → Melchizedek, king and priest with no recorded genealogy (Genesis 14; Psalm 110) → Christ as our great high priest (Hebrews 4-7) → believers made "a kingdom of priests" (1 Peter 2:9; Revelation 1:6).',
+    forChild:'Let her “help” you pray for someone else by name before bed. Say: “A priest is someone who carries other people’s needs to God — Jesus does that for us, and now He lets us do it for each other too.”',
+    recommendedReading:{ title:'Patriarchs and Prophets', author:'Ellen G. White', note:'Its chapters on Aaron and the tabernacle service describe what mediating between God and the people actually involved, before Jesus took on that role permanently.' },
+    outreach:'Pray for specific people by name and, when it feels right, tell them you did. Being told “I prayed for you this week” is one of the most quietly powerful things a friend can hear.' },
   { id:'veil', icon:'curtain', title:'Veil & Curtain', category:'Extension Thread', complexity:3, defaultAssignee:null, extension:true,
     thread:'A curtain no one could pass without dying, torn top to bottom the moment it no longer needed to stand.',
-    blurb:'The veil shutting off the Most Holy Place (Exodus 26:33) → torn top to bottom at the crucifixion (Matthew 27:51) → "a new and living way through the curtain, that is, his flesh" (Hebrews 10:20).' },
+    blurb:'The veil shutting off the Most Holy Place (Exodus 26:33) → torn top to bottom at the crucifixion (Matthew 27:51) → "a new and living way through the curtain, that is, his flesh" (Hebrews 10:20).',
+    forChild:'Hang a light sheet or towel across a doorway, then take it down together. Say: “There used to be a big curtain that kept people from getting close to God’s room — when Jesus died, it tore, top to bottom, because we don’t need to stay far away anymore.”',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its account of the crucifixion describes the temple veil tearing at the moment of Christ’s death and what it meant.' },
+    outreach:'Remove your own “curtains” — be willing to be genuinely known, not just presentable. Vulnerability about your own struggles is often what gives someone else permission to be honest about theirs.' },
   { id:'feasts', icon:'calendar', title:'Feasts & Appointed Times', category:'Extension Thread', complexity:3, defaultAssignee:null, extension:true,
     thread:'Seven feasts on a calendar that turn out to be a prophecy written in holidays.',
-    blurb:'The seven feasts of Leviticus 23 → Passover fulfilled at the cross (1 Corinthians 5:7) → Pentecost fulfilled in Acts 2 → the marriage supper of the Lamb still to come (Revelation 19:9).' },
+    blurb:'The seven feasts of Leviticus 23 → Passover fulfilled at the cross (1 Corinthians 5:7) → Pentecost fulfilled in Acts 2 → the marriage supper of the Lamb still to come (Revelation 19:9).',
+    forChild:'Pick one simple family tradition — a meal, a song, a Sabbath ritual — and do it together, asking her what it’s “for.” Say: “God gave His people special days to remember on purpose — each one was a promise about something Jesus would do.”',
+    recommendedReading:{ title:'Patriarchs and Prophets', author:'Ellen G. White', note:'Its account of the sanctuary system includes the appointed feasts and why each one mattered on the calendar, not just in theory.' },
+    outreach:'Invite people into your family’s rhythms and traditions rather than keeping them separate from your “regular” life. A shared meal on a meaningful day often opens a door no direct conversation could.' },
   { id:'mountain', icon:'mountain', title:'Mountain', category:'Extension Thread', complexity:2, defaultAssignee:null, extension:true,
     thread:'Fire and smoke at Sinai, a new law given from a hillside, and a mountain no one needs to fear approaching anymore.',
-    blurb:'Sinai, where the law is given in fire and smoke (Exodus 19) → the Sermon on the Mount, a new law-giving (Matthew 5-7) → the Mount of Transfiguration (Matthew 17) → Mount Zion, the heavenly gathering (Hebrews 12:22-24).' },
+    blurb:'Sinai, where the law is given in fire and smoke (Exodus 19) → the Sermon on the Mount, a new law-giving (Matthew 5-7) → the Mount of Transfiguration (Matthew 17) → Mount Zion, the heavenly gathering (Hebrews 12:22-24).',
+    forChild:'Climb onto a chair, a step stool, or a hill together and look around. Say: “God likes meeting His people up high sometimes — on a mountain He gave Moses the law, and on a mountain Jesus taught and later shone bright as light.”',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its chapters on the Sermon on the Mount and the Transfiguration both take place on a mountain and are worth reading side by side with this theme.' },
+    outreach:'Create a few unhurried, set-apart moments with people — a walk, a quiet coffee, time away from screens — rather than only ever catching up in passing. Meaningful conversations tend to happen away from the noise, the same way Jesus often withdrew to teach.' },
   { id:'gleaning', icon:'sickle', title:'Gleaning & The Poor', category:'Extension Thread', complexity:1, defaultAssignee:null, extension:true,
     thread:'Leave the corners of the field on purpose — provision was always meant to have margin built in for someone else.',
-    blurb:'Leave the corners of the field for the poor and the sojourner (Leviticus 19:9-10; Ruth 2) → "good news to the poor" as Jesus’s own mission statement (Luke 4:18) → James on caring for orphans and widows (James 1:27).' },
+    blurb:'Leave the corners of the field for the poor and the sojourner (Leviticus 19:9-10; Ruth 2) → "good news to the poor" as Jesus’s own mission statement (Luke 4:18) → James on caring for orphans and widows (James 1:27).',
+    forChild:'Leave one cookie or treat aside on purpose for someone else before you eat yours. Say: “God told farmers to leave some of their field for people who didn’t have enough — on purpose, not by accident.”',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its account of Jesus reading Isaiah 61 in His hometown synagogue, announcing good news to the poor as His own mission, connects directly to this theme.' },
+    outreach:'Build margin into your own resources on purpose — time, food, money — specifically to give away, rather than giving only from leftovers. People notice when generosity looks planned rather than accidental.' },
   { id:'wine', icon:'cup', title:'Wine & New Wine', category:'Extension Thread', complexity:2, defaultAssignee:null, extension:true,
     thread:'Bread and wine from a mysterious priest-king, wine that runs out at a wedding, and a cup that means two very different things.',
-    blurb:'Melchizedek brings out bread and wine (Genesis 14:18) → new wine can’t go in old wineskins (Matthew 9:17) → water becomes wine at Cana → the cup of the new covenant (Luke 22:20) → the cup of God’s wrath (Revelation 14:10).' },
+    blurb:'Melchizedek brings out bread and wine (Genesis 14:18) → new wine can’t go in old wineskins (Matthew 9:17) → water becomes wine at Cana → the cup of the new covenant (Luke 22:20) → the cup of God’s wrath (Revelation 14:10).',
+    forChild:'Let her help stir juice or a drink for a family meal. Say: “At a wedding, Jesus turned plain water into the best wine anyone had tasted — He likes taking ordinary things and making them better than we expected.”',
+    recommendedReading:{ title:'Desire of Ages', author:'Ellen G. White', note:'Its account of the wedding at Cana describes the miracle in its full setting, including why Jesus chose that ordinary family celebration for His first sign.' },
+    outreach:'Show up for people’s ordinary celebrations — a birthday, a small win, a new job — not just their crises. Jesus’s first miracle wasn’t at a funeral, it was at a wedding; joy shared together builds real friendship too.' },
 ];
 
 /** @typedef {{id:string, term:string, script:string, category:'hebrew'|'greek'|'culture', meaning:string, related:string[]}} GlossaryEntry */
@@ -769,6 +858,21 @@ function topicRow(t, personId){
     <div class="px-3 pb-4 pt-1 space-y-2 font-ui text-sm">
       <p class="italic text-parchment-dim">${t.thread}</p>
       ${t.blurb ? `<p class="text-parchment-dim leading-relaxed">${t.blurb}</p>` : ''}
+      ${t.forChild ? `
+      <div class="rounded-lg wash-azure border p-2.5">
+        <p class="text-xs font-semibold flex items-center gap-1.5 icon-azure">${icon('sparkle','w-3.5 h-3.5')} For Iviwe (almost 5)</p>
+        <p class="text-parchment-dim leading-relaxed mt-1">${t.forChild}</p>
+      </div>` : ''}
+      ${t.recommendedReading ? `
+      <div class="rounded-lg wash-azure border p-2.5">
+        <p class="text-xs font-semibold flex items-center gap-1.5 icon-azure">${icon('book','w-3.5 h-3.5')} Recommended reading</p>
+        <p class="text-parchment-dim leading-relaxed mt-1"><span class="font-display not-italic">${t.recommendedReading.title}</span> <span class="text-parchment-faint">— ${t.recommendedReading.author}</span><br>${t.recommendedReading.note}</p>
+      </div>` : ''}
+      ${t.outreach ? `
+      <div class="rounded-lg wash-azure border p-2.5">
+        <p class="text-xs font-semibold flex items-center gap-1.5 icon-azure">${icon('people','w-3.5 h-3.5')} Making friends & sharing the Good News</p>
+        <p class="text-parchment-dim leading-relaxed mt-1">${t.outreach}</p>
+      </div>` : ''}
       <label class="block text-xs text-parchment-faint mt-2">Your notes (saved on this device):</label>
       <textarea onchange="saveNote('${t.id}', this.value)" rows="2"
         class="w-full rounded-lg border border-[rgb(var(--c-text-faint)/0.3)] bg-ink/40 px-2 py-1.5 text-sm font-ui" placeholder="What stood out to you?">${escapeHtml(note)}</textarea>
